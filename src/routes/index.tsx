@@ -5,8 +5,13 @@ import logoAsset from "@/assets/pub-food-logo.png.asset.json";
 import heroFood from "@/assets/hero-food.jpg";
 import kitchenOps from "@/assets/kitchen-ops.jpg";
 import deliveryPack from "@/assets/delivery-pack.jpg";
-import offDish from "@/assets/off-dish.jpg";
-import { buildWhatsAppUrl, offReviews, pubFood } from "@/lib/pubfood-config";
+import strogonoffAsset from "@/assets/off-strogonoff-real.jpg.asset.json";
+import ifoodStoreAsset from "@/assets/ifood-store.jpg.asset.json";
+import reviewRenata from "@/assets/review-renata.png.asset.json";
+import reviewGabriel from "@/assets/review-gabriel.png.asset.json";
+import reviewMichelle from "@/assets/review-michelle.png.asset.json";
+import reviewCaio from "@/assets/review-caio.png.asset.json";
+import { buildWhatsAppUrl, pubFood } from "@/lib/pubfood-config";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -15,17 +20,14 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Cria uma landing page B2B para a PUB FOOD, focada em gestão e estruturação de negócios gastronômicos.",
+          "Gestão, estruturação e desenvolvimento de restaurantes, deliveries e dark kitchens. Menos dependência de aplicativos, mais controle da operação.",
       },
       { property: "og:url", content: "/" },
-      {
-        property: "og:title",
-        content: "PUB FOOD — Gestão de Restaurantes, Delivery e Dark Kitchens",
-      },
+      { property: "og:title", content: "PUB FOOD — Gestão de Restaurantes, Delivery e Dark Kitchens" },
       {
         property: "og:description",
         content:
-          "Cria uma landing page B2B para a PUB FOOD, focada em gestão e estruturação de negócios gastronômicos.",
+          "Gestão, estruturação e desenvolvimento de restaurantes, deliveries e dark kitchens. Menos dependência de aplicativos, mais controle da operação.",
       },
     ],
     links: [{ rel: "canonical", href: "/" }],
@@ -60,7 +62,6 @@ const NAV = [
   { href: "#metodo", label: "Como atuamos" },
   { href: "#case", label: "Case" },
   { href: "#para-quem", label: "Para quem é" },
-  { href: "#pub-core", label: "PUB CORE" },
 ];
 
 const PROBLEMS = [
@@ -188,6 +189,25 @@ const FAQ = [
   },
 ];
 
+const REVIEW_SHOTS = [
+  {
+    src: reviewRenata.url,
+    alt: "Avaliação real de Renata na página da OFF de Strogonoff no iFood, cinco estrelas, 10/06/2026.",
+  },
+  {
+    src: reviewGabriel.url,
+    alt: "Avaliação real de Gabriel na página da OFF de Strogonoff no iFood, cinco estrelas, 06/06/2026.",
+  },
+  {
+    src: reviewMichelle.url,
+    alt: "Avaliação real de Michelle na página da OFF de Strogonoff no iFood, cinco estrelas, 02/06/2026.",
+  },
+  {
+    src: reviewCaio.url,
+    alt: "Avaliação real de Caio na página da OFF de Strogonoff no iFood, cinco estrelas, 25/04/2026.",
+  },
+];
+
 /* --------------------------- Small primitives --------------------------- */
 
 function Stars({ n = 5, className = "" }: { n?: number; className?: string }) {
@@ -211,7 +231,15 @@ function Stars({ n = 5, className = "" }: { n?: number; className?: string }) {
   );
 }
 
-function Reveal({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
+function Reveal({
+  children,
+  delay = 0,
+  className = "",
+}: {
+  children: React.ReactNode;
+  delay?: number;
+  className?: string;
+}) {
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const el = ref.current;
@@ -225,15 +253,50 @@ function Reveal({ children, delay = 0 }: { children: React.ReactNode; delay?: nu
           }
         });
       },
-      { threshold: 0.12 },
+      { threshold: 0.15 },
     );
     io.observe(el);
     return () => io.disconnect();
   }, [delay]);
   return (
-    <div ref={ref} className="reveal">
+    <div ref={ref} className={`reveal ${className}`}>
       {children}
     </div>
+  );
+}
+
+/** Institutional logo — displayed verbatim on a small white chip so the
+ * original artwork is preserved on both light and dark surfaces.
+ * Do not restyle, recolor, invert or crop the source image.
+ */
+function LogoMark({ size = "md" }: { size?: "sm" | "md" }) {
+  const h = size === "sm" ? "h-9" : "h-11";
+  return (
+    <span
+      className={`inline-flex items-center justify-center bg-white rounded-sm px-2 ${h}`}
+      aria-hidden={false}
+    >
+      <img
+        src={logoAsset.url}
+        alt="PUB FOOD"
+        width={220}
+        height={220}
+        className="h-full w-auto object-contain"
+        loading="eager"
+        onError={(e) => {
+          // Fallback textual mark preserves layout if the asset fails.
+          // TODO: verificar disponibilidade do asset oficial na CDN caso este fallback apareça.
+          const el = e.currentTarget;
+          const parent = el.parentElement;
+          if (parent) {
+            parent.classList.remove("bg-white");
+            parent.classList.add("bg-transparent");
+            parent.innerHTML =
+              '<span class="text-paper font-display font-bold tracking-tight">PUB<span class="text-red">.</span>FOOD</span>';
+          }
+        }}
+      />
+    </span>
   );
 }
 
@@ -251,11 +314,12 @@ function CTAButton({
   className?: string;
 }) {
   const base =
-    "inline-flex items-center justify-center gap-2 h-12 px-6 text-[0.92rem] font-semibold tracking-tight transition-all duration-300 rounded-none";
+    "inline-flex items-center justify-center gap-2 h-12 px-6 text-[0.92rem] font-semibold tracking-tight transition-all duration-300 rounded-none group";
   const styles = {
     primary: "bg-red text-primary-foreground hover:bg-red-2",
     ghost: "text-foreground hover:text-red",
-    outline: "border border-current text-foreground hover:bg-foreground hover:text-background",
+    outline:
+      "border border-current text-foreground hover:bg-foreground hover:text-background",
   }[variant];
   return (
     <a
@@ -264,7 +328,16 @@ function CTAButton({
       className={`${base} ${styles} ${className}`}
     >
       <span>{children}</span>
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+      <svg
+        width="14"
+        height="14"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        aria-hidden
+        className="transition-transform duration-300 group-hover:translate-x-[3px]"
+      >
         <path d="M5 12h14M13 5l7 7-7 7" />
       </svg>
     </a>
@@ -285,20 +358,19 @@ function Header() {
   return (
     <header
       className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
-        scrolled ? "bg-ink/90 backdrop-blur border-b border-white/10 py-2" : "bg-transparent py-4"
+        scrolled
+          ? "bg-ink/90 backdrop-blur border-b border-white/10 py-2"
+          : "bg-transparent py-3"
       }`}
     >
-      <div className="container-editorial flex items-center justify-between">
-        <a href="#top" className="flex items-center" aria-label="PUB FOOD - início">
-          <img
-            src={logoAsset.url}
-            alt="PUB FOOD"
-            width={140}
-            height={54}
-            className="h-9 md:h-10 w-auto brightness-0 invert"
-          />
+      <div className="container-editorial grid grid-cols-[auto_1fr_auto] items-center gap-4">
+        <a href="#top" className="flex items-center shrink-0" aria-label="PUB FOOD — início">
+          <LogoMark size={scrolled ? "sm" : "md"} />
         </a>
-        <nav className="hidden lg:flex items-center gap-8" aria-label="Navegação principal">
+        <nav
+          className="hidden lg:flex items-center justify-center gap-8"
+          aria-label="Navegação principal"
+        >
           {NAV.map((n) => (
             <a
               key={n.href}
@@ -309,7 +381,7 @@ function Header() {
             </a>
           ))}
         </nav>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 justify-end">
           <a
             href={buildWhatsAppUrl()}
             target="_blank"
@@ -324,7 +396,14 @@ function Header() {
             aria-label="Abrir menu"
             aria-expanded={open}
           >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
               {open ? <path d="M6 6l12 12M6 18L18 6" /> : <path d="M3 6h18M3 12h18M3 18h18" />}
             </svg>
           </button>
@@ -332,7 +411,10 @@ function Header() {
       </div>
       {open && (
         <div className="lg:hidden bg-ink border-t border-white/10">
-          <nav className="container-editorial py-4 flex flex-col gap-4" aria-label="Navegação móvel">
+          <nav
+            className="container-editorial py-4 flex flex-col gap-4"
+            aria-label="Navegação móvel"
+          >
             {NAV.map((n) => (
               <a
                 key={n.href}
@@ -360,13 +442,86 @@ function Header() {
 
 /* --------------------------------- Hero --------------------------------- */
 
-function Hero() {
+/** Abstract order-flow motion graphic: small modules start slightly
+ * off-grid and settle onto vertical grid lines. Plays once; no loop.
+ * Prefers-reduced-motion is honoured via the global CSS override. */
+function HeroFlow() {
   return (
-    <section id="top" className="on-dark relative bg-ink text-paper overflow-hidden pt-32 md:pt-40 pb-20 md:pb-28">
-      {/* backdrop grid lines */}
-      <div className="pointer-events-none absolute inset-0 opacity-[0.06]">
+    <div className="pointer-events-none absolute inset-0" aria-hidden>
+      {/* base vertical grid */}
+      <div className="absolute inset-0 opacity-[0.07]">
         <div className="h-full w-full [background-image:linear-gradient(to_right,white_1px,transparent_1px)] [background-size:8.33%_100%]" />
       </div>
+      {/* animated grid line reveals */}
+      <svg className="absolute inset-0 h-full w-full" preserveAspectRatio="none">
+        {[15, 33, 55, 78].map((x, i) => (
+          <line
+            key={x}
+            x1={`${x}%`}
+            x2={`${x}%`}
+            y1="0"
+            y2="100%"
+            stroke="rgba(255,255,255,0.14)"
+            strokeWidth="1"
+            strokeDasharray="1200"
+            strokeDashoffset="1200"
+            style={{
+              animation: `pf-line-draw 900ms cubic-bezier(.2,.7,.2,1) ${400 + i * 150}ms forwards`,
+            }}
+          />
+        ))}
+      </svg>
+      {/* order modules that settle onto the grid */}
+      <div className="absolute inset-0">
+        {[
+          { top: "22%", left: "16%", d: 800, color: "bg-red" },
+          { top: "42%", left: "34%", d: 950, color: "bg-white/70" },
+          { top: "68%", left: "56%", d: 1100, color: "bg-red" },
+          { top: "32%", left: "79%", d: 1250, color: "bg-white/60" },
+          { top: "78%", left: "22%", d: 1400, color: "bg-white/40" },
+        ].map((m, i) => (
+          <span
+            key={i}
+            className={`absolute h-1.5 w-1.5 ${m.color}`}
+            style={{
+              top: m.top,
+              left: m.left,
+              opacity: 0,
+              transform: "translate(6px,-4px)",
+              animation: `pf-module-settle 900ms cubic-bezier(.2,.7,.2,1) ${m.d}ms forwards`,
+            }}
+          />
+        ))}
+      </div>
+      <style>{`
+        @keyframes pf-line-draw {
+          to { stroke-dashoffset: 0; }
+        }
+        @keyframes pf-module-settle {
+          0% { opacity: 0; transform: translate(6px,-4px); }
+          60% { opacity: 1; }
+          100% { opacity: 1; transform: translate(0,0); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          [style*="pf-line-draw"], [style*="pf-module-settle"] {
+            animation: none !important;
+            opacity: 1 !important;
+            stroke-dashoffset: 0 !important;
+            transform: none !important;
+          }
+        }
+      `}</style>
+    </div>
+  );
+}
+
+function Hero() {
+  return (
+    <section
+      id="top"
+      className="on-dark relative bg-ink text-paper overflow-hidden pt-28 md:pt-36 pb-20 md:pb-28"
+    >
+      <HeroFlow />
       <div className="container-editorial relative grid grid-cols-12 gap-x-6 gap-y-10 items-end">
         <div className="col-span-12 lg:col-span-7">
           <Reveal>
@@ -376,10 +531,10 @@ function Hero() {
             </div>
           </Reveal>
           <Reveal delay={80}>
-            <h1 className="mt-6 text-[2.6rem] leading-[1.02] sm:text-6xl lg:text-[5.2rem] font-semibold tracking-[-0.03em] text-paper">
+            <h1 className="mt-6 text-[2.4rem] leading-[1.02] sm:text-6xl lg:text-[5.2rem] font-semibold tracking-[-0.03em] text-paper">
               Seu delivery pode vender muito{" "}
-              <span className="italic font-light text-white/70">sem entregar</span>{" "}
-              o controle do <span className="text-red">negócio</span>.
+              <span className="italic font-light text-white/70">sem entregar</span> o controle
+              do <span className="text-red">negócio</span>.
             </h1>
           </Reveal>
           <Reveal delay={160}>
@@ -398,7 +553,14 @@ function Hero() {
                 className="inline-flex items-center gap-2 h-12 px-6 text-[0.92rem] font-semibold text-white/90 hover:text-white border border-white/25 hover:border-white transition-colors"
               >
                 Ver case OFF de Strogonoff
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
                   <path d="M12 5v14M5 12l7 7 7-7" />
                 </svg>
               </a>
@@ -414,35 +576,24 @@ function Hero() {
         </div>
 
         <div className="col-span-12 lg:col-span-5 relative">
-          <Reveal delay={200}>
-            <div className="relative aspect-[4/5] w-full">
+          <Reveal delay={220}>
+            <div
+              className="relative aspect-[4/5] w-full overflow-hidden"
+              style={{
+                clipPath: "inset(0 0 0 0)",
+              }}
+            >
               <img
                 src={heroFood}
-                alt="Prato gastronômico servido em operação de delivery"
+                alt="Operação de cozinha profissional preparando pedidos para delivery"
                 width={1600}
                 height={2000}
-                className="absolute inset-0 h-full w-full object-cover grayscale-[0.05] contrast-[1.02]"
+                className="absolute inset-0 h-full w-full object-cover contrast-[1.02]"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-ink/70 via-transparent to-transparent" />
-              {/* Editorial floating cards */}
-              <div className="absolute -left-4 md:-left-10 bottom-8 bg-paper text-ink px-4 py-3 shadow-xl max-w-[220px]">
-                <div className="text-[0.65rem] uppercase tracking-[0.18em] text-red font-semibold">
-                  Reputação
-                </div>
-                <div className="mt-1 flex items-center gap-2">
-                  <Stars n={5} />
-                  <span className="text-sm font-semibold">5,0</span>
-                </div>
-                <div className="mt-1 text-[0.72rem] text-graphite">
-                  em todas as avaliações exibidas
-                </div>
-              </div>
-              <div className="absolute -right-2 md:-right-8 top-10 bg-red text-primary-foreground px-4 py-3 max-w-[200px]">
-                <div className="text-[0.65rem] uppercase tracking-[0.18em] font-semibold opacity-80">
-                  iFood
-                </div>
-                <div className="mt-1 text-lg font-semibold leading-tight">Super</div>
-                <div className="text-[0.72rem] opacity-90">classificação do perfil</div>
+              <div className="absolute inset-0 bg-gradient-to-t from-ink/80 via-ink/10 to-transparent" />
+              {/* subtle editorial marker (no OFF proofs here) */}
+              <div className="absolute left-4 bottom-4 md:left-6 md:bottom-6 border border-white/25 px-3 py-2 text-[0.62rem] uppercase tracking-[0.22em] text-white/70 backdrop-blur-sm">
+                Operação sob controle
               </div>
             </div>
           </Reveal>
@@ -468,14 +619,14 @@ function ProblemSection() {
             <span className="italic font-light text-graphite">construir um negócio.</span>
           </h2>
           <p className="mt-6 text-graphite max-w-md leading-relaxed">
-            Muitos deliveries conseguem gerar pedidos, mas continuam sem controle sobre a própria
-            operação, seus clientes e sua marca.
+            Muitos deliveries conseguem gerar pedidos, mas continuam sem controle sobre a
+            própria operação, seus clientes e sua marca.
           </p>
         </div>
         <div className="col-span-12 lg:col-span-7 lg:pl-8">
           <div className="grid sm:grid-cols-2 gap-px bg-line">
-            {PROBLEMS.map((p) => (
-              <Reveal key={p.n}>
+            {PROBLEMS.map((p, i) => (
+              <Reveal key={p.n} delay={i * 80}>
                 <article className="bg-paper p-8 h-full flex flex-col gap-3 hover:bg-muted transition-colors">
                   <span className="text-red font-display text-lg font-semibold">{p.n}</span>
                   <h3 className="text-xl font-semibold tracking-tight">{p.title}</h3>
@@ -509,15 +660,15 @@ function SolutionSection() {
           </div>
           <div className="col-span-12 lg:col-span-4 lg:pl-6">
             <p className="text-white/60 text-sm leading-relaxed border-l border-red/60 pl-4">
-              Cada operação recebe uma estrutura compatível com seu estágio, público, capacidade e
-              objetivos.
+              Cada operação recebe uma estrutura compatível com seu estágio, público, capacidade
+              e objetivos.
             </p>
           </div>
         </div>
 
         <div className="mt-16 grid grid-cols-1 md:grid-cols-2 gap-px bg-white/10 border border-white/10">
           {PILLARS.map((p, i) => (
-            <Reveal key={p.n} delay={i * 60}>
+            <Reveal key={p.n} delay={i * 80}>
               <article className="bg-ink p-8 md:p-10 h-full flex flex-col gap-4 group hover:bg-graphite-2 transition-colors">
                 <div className="flex items-baseline justify-between">
                   <span className="font-display text-red text-sm font-semibold tracking-widest">
@@ -548,52 +699,148 @@ function SolutionSection() {
 /* --------------------------------- Method --------------------------------- */
 
 function MethodSection() {
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const [progress, setProgress] = useState(0); // 0..1 within section
+  const [active, setActive] = useState(0);
+
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+    let raf = 0;
+    const onScroll = () => {
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        raf = 0;
+        const rect = el.getBoundingClientRect();
+        const vh = window.innerHeight;
+        // start when top of section reaches 60% of viewport, end when bottom hits 40%
+        const start = vh * 0.6;
+        const end = -rect.height + vh * 0.4;
+        const raw = (start - rect.top) / (start - end);
+        const p = Math.max(0, Math.min(1, raw));
+        setProgress(p);
+        setActive(Math.min(METHOD.length - 1, Math.floor(p * METHOD.length)));
+      });
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, []);
+
   return (
-    <section id="metodo" className="bg-paper text-ink py-24 md:py-32 border-t border-line">
+    <section
+      id="metodo"
+      ref={sectionRef}
+      className="bg-paper text-ink py-24 md:py-32 border-t border-line"
+    >
       <div className="container-editorial">
-        <div className="max-w-3xl">
-          <div className="eyebrow">
-            <span className="inline-block h-px w-8 bg-red" />
-            Método
-          </div>
-          <h2 className="mt-6 text-4xl md:text-6xl leading-[1.02] tracking-tight">
-            Do improviso para uma <span className="italic font-light text-graphite">operação estruturada.</span>
-          </h2>
-        </div>
-
-        <div className="mt-16 grid grid-cols-12 gap-x-6 gap-y-10 relative">
-          <div className="hidden lg:block absolute top-[3.2rem] left-0 right-0 h-px bg-line" />
-          {METHOD.map((m, i) => (
-            <Reveal key={m.n} delay={i * 80}>
-              <div className="col-span-12 sm:col-span-6 lg:col-span-3 relative pt-0 lg:pt-8">
-                <div className="hidden lg:block absolute -top-1 left-0 h-2 w-2 rounded-full bg-red" />
-                <div className="font-display text-[3.5rem] leading-none font-semibold text-ink/90">
-                  {m.n}
-                </div>
-                <h3 className="mt-4 text-xl font-semibold tracking-tight">{m.title}</h3>
-                <p className="mt-3 text-graphite text-[0.95rem] leading-relaxed">{m.text}</p>
+        <div className="grid grid-cols-12 gap-x-6 gap-y-12 lg:gap-y-0">
+          {/* Left: sticky headline column */}
+          <div className="col-span-12 lg:col-span-5">
+            <div className="lg:sticky lg:top-28">
+              <div className="eyebrow">
+                <span className="inline-block h-px w-8 bg-red" />
+                Método
               </div>
-            </Reveal>
-          ))}
+              <h2 className="mt-6 text-4xl md:text-5xl lg:text-[3.5rem] leading-[1.02] tracking-tight">
+                Do improviso para uma{" "}
+                <span className="italic font-light text-graphite">operação estruturada.</span>
+              </h2>
+              <p className="mt-6 text-graphite leading-relaxed max-w-md">
+                Um caminho em quatro etapas para transformar uma operação improvisada em um
+                negócio com processos, marca e recorrência.
+              </p>
+              <div className="mt-8 hidden lg:block relative pl-2">
+                <img
+                  src={kitchenOps}
+                  alt="Cozinha profissional em operação"
+                  width={1200}
+                  height={900}
+                  loading="lazy"
+                  className="w-full aspect-[4/3] object-cover"
+                />
+                <div
+                  className="absolute inset-0 bg-paper origin-top"
+                  style={{
+                    transform: `scaleY(${1 - progress})`,
+                    transition: "transform 400ms linear",
+                  }}
+                  aria-hidden
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Right: steps + vertical progress rail */}
+          <div className="col-span-12 lg:col-span-7 lg:pl-10 relative">
+            <div className="absolute top-2 bottom-2 left-4 md:left-6 w-px bg-line" aria-hidden />
+            <div
+              className="absolute top-2 left-4 md:left-6 w-px bg-red origin-top"
+              style={{
+                height: `calc((100% - 1rem) * ${progress})`,
+                transition: "height 400ms linear",
+              }}
+              aria-hidden
+            />
+            <ol className="space-y-14 md:space-y-20">
+              {METHOD.map((m, i) => {
+                const isActive = i === active;
+                const isPast = i < active;
+                return (
+                  <li key={m.n} className="relative pl-12 md:pl-16">
+                    <span
+                      className={`absolute left-2.5 md:left-4.5 top-3 h-3 w-3 rounded-full border-2 transition-all duration-300 ${
+                        isActive
+                          ? "bg-red border-red scale-125"
+                          : isPast
+                            ? "bg-red border-red"
+                            : "bg-paper border-line"
+                      }`}
+                      aria-hidden
+                    />
+                    <Reveal delay={i * 60}>
+                      <div
+                        className={`transition-opacity duration-300 ${
+                          isActive || isPast ? "opacity-100" : "opacity-70"
+                        }`}
+                      >
+                        <div className="flex items-baseline gap-4">
+                          <span
+                            className={`font-display font-semibold leading-none tracking-tight transition-all duration-300 ${
+                              isActive
+                                ? "text-red text-6xl md:text-7xl"
+                                : "text-ink/70 text-5xl md:text-6xl"
+                            }`}
+                          >
+                            {m.n}
+                          </span>
+                          <h3 className="text-xl md:text-2xl font-semibold tracking-tight">
+                            {m.title}
+                          </h3>
+                        </div>
+                        <p className="mt-4 text-graphite text-base md:text-lg leading-relaxed max-w-xl">
+                          {m.text}
+                        </p>
+                        <div className="mt-6 h-px w-16 bg-line" />
+                      </div>
+                    </Reveal>
+                  </li>
+                );
+              })}
+            </ol>
+          </div>
         </div>
 
-        <div className="mt-20 grid grid-cols-12 gap-6 items-center">
-          <div className="col-span-12 md:col-span-5">
-            <img
-              src={kitchenOps}
-              alt="Cozinha profissional em operação"
-              width={1400}
-              height={1000}
-              loading="lazy"
-              className="w-full h-auto object-cover aspect-[4/3]"
-            />
-          </div>
-          <div className="col-span-12 md:col-span-7 md:pl-10">
-            <p className="text-2xl md:text-3xl font-display font-medium leading-snug tracking-tight">
-              A PUB FOOD não substitui a operação. Ela dá <span className="text-red">forma</span>{" "}
-              ao que já existe e prepara o que ainda precisa existir.
-            </p>
-          </div>
+        <div className="mt-20 border-t border-line pt-10 max-w-3xl">
+          <p className="text-2xl md:text-3xl font-display font-medium leading-snug tracking-tight">
+            A PUB FOOD não substitui a operação. Ela dá <span className="text-red">forma</span>{" "}
+            ao que já existe e prepara o que ainda precisa existir.
+          </p>
         </div>
       </div>
     </section>
@@ -604,7 +851,10 @@ function MethodSection() {
 
 function CaseSection() {
   return (
-    <section id="case" className="on-dark bg-ink text-paper py-24 md:py-36 relative overflow-hidden">
+    <section
+      id="case"
+      className="on-dark bg-ink text-paper py-24 md:py-36 relative overflow-hidden"
+    >
       <div className="container-editorial">
         <div className="grid grid-cols-12 gap-x-6 gap-y-10 items-end">
           <div className="col-span-12 lg:col-span-7">
@@ -636,70 +886,92 @@ function CaseSection() {
               className="inline-flex items-center gap-3 border border-white/25 hover:border-red hover:text-red transition-colors h-12 px-6 text-sm font-semibold text-white"
             >
               Ver loja no iFood
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
                 <path d="M7 17L17 7M8 7h9v9" />
               </svg>
             </a>
           </div>
         </div>
 
-        {/* Editorial composition */}
-        <div className="mt-16 grid grid-cols-12 gap-4 md:gap-6">
+        {/* Editorial composition — real strogonoff + concise proofs */}
+        <div className="mt-16 grid grid-cols-12 gap-4 md:gap-6 items-start">
           <div className="col-span-12 md:col-span-7 relative">
-            <img
-              src={offDish}
-              alt="Strogonoff — prato de referência da OFF de Strogonoff"
-              width={1400}
-              height={1400}
-              loading="lazy"
-              className="w-full aspect-[5/4] object-cover"
-            />
-            <div className="absolute left-0 -bottom-8 md:-bottom-10 bg-paper text-ink px-6 py-5 max-w-[300px] shadow-2xl">
-              <div className="text-[0.62rem] uppercase tracking-[0.22em] text-red font-semibold">
-                iFood
-              </div>
-              <div className="mt-1 text-2xl font-display font-semibold">Super</div>
-              <div className="text-[0.75rem] text-graphite mt-1">
-                Loja classificada como Super no iFood
-              </div>
-            </div>
+            <Reveal>
+              <img
+                src={strogonoffAsset.url}
+                alt="Strogonoff brasileiro acompanhado de arroz branco e batata palha."
+                width={1408}
+                height={1120}
+                loading="lazy"
+                className="w-full aspect-[5/4] object-cover"
+                style={{ objectPosition: "center" }}
+              />
+            </Reveal>
           </div>
           <div className="col-span-12 md:col-span-5 flex flex-col gap-4 md:gap-6">
-            <div className="bg-graphite-2 p-6 md:p-8 flex-1">
-              <Stars n={5} className="text-red" />
-              <div className="mt-4 text-4xl md:text-5xl font-display font-semibold leading-none">
-                5,0
+            <Reveal delay={80}>
+              <div className="bg-graphite-2 p-6 md:p-8 border-l-2 border-red">
+                <div className="text-[0.62rem] uppercase tracking-[0.22em] text-red font-semibold">
+                  Qualidade do serviço
+                </div>
+                <div className="mt-3 text-3xl md:text-4xl font-display font-semibold leading-none">
+                  Super no iFood
+                </div>
+                <p className="mt-3 text-white/70 text-sm leading-relaxed">
+                  Classificação exibida na página da loja com base nos pedidos dos últimos meses.
+                </p>
               </div>
-              <p className="mt-3 text-white/70 text-sm leading-relaxed">
-                em todas as avaliações públicas exibidas na página da loja
-              </p>
-            </div>
-            <div className="bg-red text-primary-foreground p-6 md:p-8 flex-1">
-              <div className="text-[0.62rem] uppercase tracking-[0.22em] opacity-80 font-semibold">
-                Padrão
+            </Reveal>
+            <Reveal delay={160}>
+              <div className="bg-ink border border-white/10 p-6 md:p-8">
+                <Stars n={5} />
+                <div className="mt-3 text-lg md:text-xl font-display font-medium leading-snug text-paper">
+                  Todas as avaliações exibidas possuem 5 estrelas.
+                </div>
               </div>
-              <p className="mt-3 text-lg md:text-xl font-display font-medium leading-snug">
-                Quando produto, atendimento e operação seguem o mesmo padrão, a reputação deixa de
-                ser acaso.
-              </p>
-            </div>
+            </Reveal>
+            <Reveal delay={240}>
+              <div className="bg-red text-primary-foreground p-6 md:p-8">
+                <p className="text-base md:text-lg font-display font-medium leading-snug">
+                  Quando produto, atendimento e operação seguem o mesmo padrão, a reputação
+                  deixa de ser acaso.
+                </p>
+              </div>
+            </Reveal>
           </div>
         </div>
 
-        {/* Indicators */}
-        <div className="mt-24 grid grid-cols-1 md:grid-cols-3 gap-px bg-white/10 border border-white/10">
-          {[
-            { k: "Super", v: "no iFood" },
-            { k: "100%", v: "das avaliações exibidas com 5 estrelas" },
-            { k: "Consistência", v: "de qualidade percebida em cada pedido" },
-          ].map((it) => (
-            <div key={it.k} className="bg-ink p-8 md:p-10">
-              <div className="font-display text-3xl md:text-5xl font-semibold text-paper tracking-tight">
-                {it.k}
+        {/* Real store screenshot as visual evidence */}
+        <div className="mt-16 grid grid-cols-12 gap-6 items-center">
+          <div className="col-span-12 md:col-span-5">
+            <Reveal>
+              <div className="border border-white/10 bg-graphite-2 p-3 md:p-4 max-w-xs mx-auto md:mx-0">
+                <img
+                  src={ifoodStoreAsset.url}
+                  alt="Captura real da página da OFF de Strogonoff no iFood, exibindo classificação Super e nota 5,0 com 112 avaliações."
+                  width={738}
+                  height={1600}
+                  loading="lazy"
+                  className="w-full h-auto"
+                />
               </div>
-              <div className="mt-2 text-white/60 text-sm max-w-[260px]">{it.v}</div>
-            </div>
-          ))}
+            </Reveal>
+          </div>
+          <div className="col-span-12 md:col-span-7 md:pl-6">
+            <p className="text-white/70 text-base md:text-lg leading-relaxed max-w-xl">
+              Captura real da página da OFF de Strogonoff no iFood. A classificação{" "}
+              <span className="text-paper font-medium">Super</span> e a nota{" "}
+              <span className="text-paper font-medium">5,0</span> são exibidas pela própria
+              plataforma, com base no comportamento real dos pedidos.
+            </p>
+          </div>
         </div>
       </div>
     </section>
@@ -709,6 +981,27 @@ function CaseSection() {
 /* ------------------------------ Reviews ------------------------------ */
 
 function ReviewsSection() {
+  const [lightbox, setLightbox] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (lightbox === null) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setLightbox(null);
+      if (e.key === "ArrowRight")
+        setLightbox((v) => (v === null ? v : (v + 1) % REVIEW_SHOTS.length));
+      if (e.key === "ArrowLeft")
+        setLightbox((v) =>
+          v === null ? v : (v - 1 + REVIEW_SHOTS.length) % REVIEW_SHOTS.length,
+        );
+    };
+    document.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+  }, [lightbox]);
+
   return (
     <section className="on-dark bg-graphite-2 text-paper py-24 md:py-32 border-t border-white/5">
       <div className="container-editorial">
@@ -724,36 +1017,81 @@ function ReviewsSection() {
           </div>
           <div className="col-span-12 lg:col-span-4">
             <p className="text-white/60 text-sm border-l border-red/60 pl-4">
-              Avaliações publicadas por clientes na página da OFF de Strogonoff no iFood.
+              Capturas reais de avaliações publicadas por clientes na página da OFF de Strogonoff
+              no iFood.
             </p>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-          {offReviews.map((r) => (
-            <Reveal key={r.name + r.date}>
-              <article className="bg-ink border border-white/10 p-6 md:p-8 h-full flex flex-col">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="h-9 w-9 rounded-full bg-red/15 border border-red/30 flex items-center justify-center text-red font-semibold">
-                      {r.name.slice(0, 1)}
-                    </div>
-                    <div>
-                      <div className="font-semibold text-paper">{r.name}</div>
-                      <div className="flex items-center gap-2 text-xs text-white/50">
-                        <Stars n={r.rating} />
-                        <span>{r.rating.toFixed(1).replace(".", ",")}</span>
-                      </div>
-                    </div>
-                  </div>
-                  <span className="text-xs text-white/40">{r.date}</span>
-                </div>
-                <p className="mt-6 text-white/80 leading-relaxed text-[0.98rem]">"{r.text}"</p>
-              </article>
+        {/* Desktop: 2-col grid. Mobile: horizontal snap scroll. */}
+        <div className="hidden md:grid grid-cols-2 gap-6">
+          {REVIEW_SHOTS.map((r, i) => (
+            <Reveal key={r.src} delay={i * 60}>
+              <button
+                type="button"
+                onClick={() => setLightbox(i)}
+                className="group block w-full text-left bg-white p-4 md:p-5 border border-white/10 hover:-translate-y-[3px] transition-transform duration-300"
+                aria-label={`Ampliar avaliação: ${r.alt}`}
+              >
+                <img
+                  src={r.src}
+                  alt={r.alt}
+                  loading="lazy"
+                  className="w-full h-auto"
+                />
+              </button>
             </Reveal>
           ))}
         </div>
+
+        <div className="md:hidden -mx-5 px-5 flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4">
+          {REVIEW_SHOTS.map((r, i) => (
+            <button
+              key={r.src}
+              type="button"
+              onClick={() => setLightbox(i)}
+              className="snap-start shrink-0 w-[85%] bg-white p-3 border border-white/10 text-left"
+              aria-label={`Ampliar avaliação: ${r.alt}`}
+            >
+              <img src={r.src} alt={r.alt} loading="lazy" className="w-full h-auto" />
+            </button>
+          ))}
+        </div>
+
+        <p className="mt-8 text-xs text-white/50 uppercase tracking-[0.18em]">
+          Imagens reais da página da loja no iFood.
+        </p>
       </div>
+
+      {lightbox !== null && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="Avaliação ampliada"
+          className="fixed inset-0 z-[60] bg-ink/95 backdrop-blur-sm flex items-center justify-center p-4"
+          onClick={() => setLightbox(null)}
+        >
+          <button
+            onClick={() => setLightbox(null)}
+            className="absolute top-4 right-4 text-white/80 hover:text-white p-2"
+            aria-label="Fechar"
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M6 6l12 12M6 18L18 6" />
+            </svg>
+          </button>
+          <div
+            className="bg-white p-4 md:p-6 max-w-2xl w-full"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <img
+              src={REVIEW_SHOTS[lightbox].src}
+              alt={REVIEW_SHOTS[lightbox].alt}
+              className="w-full h-auto"
+            />
+          </div>
+        </div>
+      )}
     </section>
   );
 }
@@ -776,10 +1114,12 @@ function CaseMeaning() {
             O que o case representa
           </div>
           <h2 className="mt-6 text-4xl md:text-5xl leading-[1.02] tracking-tight">
-            Uma boa avaliação começa <span className="italic font-light text-graphite">muito antes</span> da entrega.
+            Uma boa avaliação começa{" "}
+            <span className="italic font-light text-graphite">muito antes</span> da entrega.
           </h2>
           <p className="mt-8 text-graphite leading-relaxed max-w-md">
-            A PUB FOOD trabalha para transformar esses pontos em sistema, e não em esforço isolado.
+            A PUB FOOD trabalha para transformar esses pontos em sistema, e não em esforço
+            isolado.
           </p>
           <img
             src={deliveryPack}
@@ -792,16 +1132,18 @@ function CaseMeaning() {
         </div>
         <div className="col-span-12 lg:col-span-7 lg:pl-8">
           <div className="grid grid-cols-1 gap-px bg-line">
-            {points.map((p) => (
-              <div key={p.n} className="bg-paper py-8 flex gap-6 items-start">
-                <div className="font-display text-red text-2xl font-semibold w-12 shrink-0">
-                  {p.n}
+            {points.map((p, i) => (
+              <Reveal key={p.n} delay={i * 80}>
+                <div className="bg-paper py-8 flex gap-6 items-start">
+                  <div className="font-display text-red text-2xl font-semibold w-12 shrink-0">
+                    {p.n}
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-semibold tracking-tight">{p.t}</h3>
+                    <p className="mt-2 text-graphite">{p.d}</p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="text-xl font-semibold tracking-tight">{p.t}</h3>
-                  <p className="mt-2 text-graphite">{p.d}</p>
-                </div>
-              </div>
+              </Reveal>
             ))}
           </div>
         </div>
@@ -823,81 +1165,32 @@ function AudienceSection() {
           </div>
           <h2 className="mt-6 text-4xl md:text-6xl leading-[1.02] tracking-tight text-paper">
             A PUB FOOD é para quem já entendeu que{" "}
-            <span className="italic font-light text-white/60">só receber pedidos</span> não basta.
+            <span className="italic font-light text-white/60">só receber pedidos</span> não
+            basta.
           </h2>
         </div>
 
         <ul className="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-white/10 border border-white/10">
           {AUDIENCE.map((a, i) => (
-            <li
-              key={a}
-              className="bg-ink p-8 flex items-start gap-4 hover:bg-graphite-2 transition-colors"
-            >
-              <span className="font-display text-red text-xs font-semibold pt-2 tracking-widest">
-                {String(i + 1).padStart(2, "0")}
-              </span>
-              <span className="text-lg text-paper leading-snug">{a}</span>
-            </li>
+            <Reveal key={a} delay={i * 60}>
+              <li className="bg-ink p-8 flex items-start gap-4 hover:bg-graphite-2 transition-colors h-full">
+                <span className="font-display text-red text-xs font-semibold pt-2 tracking-widest">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <span className="text-lg text-paper leading-snug">{a}</span>
+              </li>
+            </Reveal>
           ))}
         </ul>
 
-        <div className="mt-14 border-l-2 border-red pl-6 max-w-3xl">
-          <p className="text-white/70 text-lg">
-            Não é para quem procura apenas uma arte, um cardápio isolado ou uma campanha sem
-            estrutura.
-          </p>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* --------------------------------- PUB CORE --------------------------------- */
-
-function PubCoreSection() {
-  const nodes = [
-    { k: "PUB CORE", v: "Estratégia e governança" },
-    { k: "PUB FOOD", v: "Gestão e operação gastronômica" },
-    { k: "PUB IA · MEDIA · FILMS", v: "Tecnologia, audiência e comunicação" },
-  ];
-  return (
-    <section id="pub-core" className="bg-paper text-ink py-24 md:py-32 border-t border-line">
-      <div className="container-editorial grid grid-cols-12 gap-x-6 gap-y-10 items-start">
-        <div className="col-span-12 lg:col-span-5">
-          <div className="eyebrow">
-            <span className="inline-block h-px w-8 bg-red" />
-            Ecossistema
+        <Reveal delay={300}>
+          <div className="mt-14 border-l-2 border-red pl-6 max-w-3xl">
+            <p className="text-white/70 text-lg">
+              Não é para quem procura apenas uma arte, um cardápio isolado ou uma campanha sem
+              estrutura.
+            </p>
           </div>
-          <h2 className="mt-6 text-4xl md:text-5xl leading-[1.05] tracking-tight">
-            Uma empresa da <span className="text-red">PUB CORE</span>.
-          </h2>
-          <p className="mt-6 text-graphite leading-relaxed max-w-md">
-            A PUB FOOD faz parte de um ecossistema que conecta tecnologia, mídia, produtos, dados e
-            operação. Essa integração permite combinar estratégia gastronômica com presença
-            digital, automação, conteúdo e inteligência operacional.
-          </p>
-        </div>
-
-        <div className="col-span-12 lg:col-span-7 lg:pl-10">
-          <div className="relative">
-            {nodes.map((n, i) => (
-              <div key={n.k} className="flex items-start gap-6 py-6 border-t border-line first:border-t-0">
-                <div className="font-display text-red text-sm font-semibold w-8 pt-1">
-                  {String(i + 1).padStart(2, "0")}
-                </div>
-                <div className="flex-1">
-                  <div className="text-xl md:text-2xl font-semibold tracking-tight">{n.k}</div>
-                  <div className="text-graphite mt-1">{n.v}</div>
-                </div>
-                <div className="hidden md:block text-graphite/50">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                    <path d="M5 12h14M13 5l7 7-7 7" />
-                  </svg>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+        </Reveal>
       </div>
     </section>
   );
@@ -926,33 +1219,40 @@ function FaqSection() {
               return (
                 <div key={f.q} className="border-b border-ink/20">
                   <button
-                    className="w-full text-left py-6 flex items-start gap-6 group"
+                    className="w-full text-left py-6 flex items-start gap-4 md:gap-6 group focus-visible:outline focus-visible:outline-2 focus-visible:outline-red"
                     onClick={() => setOpen(isOpen ? null : i)}
                     aria-expanded={isOpen}
                   >
-                    <span className="font-display text-red text-sm font-semibold pt-2 w-8">
+                    <span className="font-display text-red text-sm font-semibold pt-2 w-8 shrink-0">
                       {String(i + 1).padStart(2, "0")}
                     </span>
-                    <span className="flex-1 text-lg md:text-xl font-medium tracking-tight group-hover:text-red transition-colors">
+                    <span className="flex-1 min-w-0 text-base md:text-xl font-medium tracking-tight group-hover:text-red transition-colors">
                       {f.q}
                     </span>
                     <span
-                      className={`text-red transition-transform duration-300 mt-1 ${
+                      className={`text-red transition-transform duration-300 mt-1 shrink-0 ${
                         isOpen ? "rotate-45" : ""
                       }`}
                       aria-hidden
                     >
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                      >
                         <path d="M12 5v14M5 12h14" />
                       </svg>
                     </span>
                   </button>
                   <div
-                    className={`grid transition-[grid-template-rows] duration-300 ease-out ${
-                      isOpen ? "grid-rows-[1fr] pb-6" : "grid-rows-[0fr]"
+                    className={`grid transition-[grid-template-rows,opacity] duration-300 ease-out ${
+                      isOpen ? "grid-rows-[1fr] opacity-100 pb-6" : "grid-rows-[0fr] opacity-0"
                     }`}
                   >
-                    <div className="overflow-hidden pl-14 pr-10">
+                    <div className="overflow-hidden pl-12 md:pl-14 pr-4 md:pr-10">
                       <p className="text-graphite leading-relaxed">{f.a}</p>
                     </div>
                   </div>
@@ -1049,7 +1349,10 @@ function CTASection() {
               />
             </div>
             <div className="col-span-2 sm:col-span-1">
-              <label htmlFor="negocio" className="text-xs uppercase tracking-[0.18em] text-white/50">
+              <label
+                htmlFor="negocio"
+                className="text-xs uppercase tracking-[0.18em] text-white/50"
+              >
                 Nome do negócio
               </label>
               <input
@@ -1073,7 +1376,10 @@ function CTASection() {
               />
             </div>
             <div className="col-span-2 sm:col-span-1">
-              <label htmlFor="whatsapp" className="text-xs uppercase tracking-[0.18em] text-white/50">
+              <label
+                htmlFor="whatsapp"
+                className="text-xs uppercase tracking-[0.18em] text-white/50"
+              >
                 WhatsApp
               </label>
               <input
@@ -1119,7 +1425,10 @@ function CTASection() {
               </select>
             </div>
             <div className="col-span-2">
-              <label htmlFor="desafio" className="text-xs uppercase tracking-[0.18em] text-white/50">
+              <label
+                htmlFor="desafio"
+                className="text-xs uppercase tracking-[0.18em] text-white/50"
+              >
                 Principal desafio atual
               </label>
               <textarea
@@ -1134,10 +1443,18 @@ function CTASection() {
             <div className="col-span-2 mt-4 flex flex-col sm:flex-row gap-3">
               <button
                 type="submit"
-                className="inline-flex items-center justify-center gap-2 h-12 px-8 bg-red text-primary-foreground text-sm font-semibold hover:bg-red-2 transition-colors"
+                className="inline-flex items-center justify-center gap-2 h-12 px-8 bg-red text-primary-foreground text-sm font-semibold hover:bg-red-2 transition-colors group"
               >
                 Quero falar com a PUB FOOD
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  className="transition-transform duration-300 group-hover:translate-x-[3px]"
+                >
                   <path d="M5 12h14M13 5l7 7-7 7" />
                 </svg>
               </button>
@@ -1167,13 +1484,7 @@ function Footer() {
     <footer className="on-dark bg-ink text-white/70 border-t border-white/10 py-14">
       <div className="container-editorial grid grid-cols-12 gap-x-6 gap-y-10">
         <div className="col-span-12 md:col-span-5">
-          <img
-            src={logoAsset.url}
-            alt="PUB FOOD"
-            width={140}
-            height={54}
-            className="h-9 w-auto brightness-0 invert"
-          />
+          <LogoMark size="sm" />
           <p className="mt-5 max-w-sm text-sm">
             Gestão, estrutura e crescimento para restaurantes, deliveries e dark kitchens.
           </p>
@@ -1222,7 +1533,7 @@ function Footer() {
               </a>
             </li>
             <li className="text-white/40 pt-4 text-xs uppercase tracking-[0.18em]">
-              Uma empresa da PUB CORE
+              Uma empresa da PUB CORE.
             </li>
           </ul>
         </div>
@@ -1254,7 +1565,7 @@ function MobileCTA() {
 
 function Landing() {
   return (
-    <main className="bg-paper text-ink">
+    <main className="bg-paper text-ink overflow-x-hidden">
       <Header />
       <Hero />
       <ProblemSection />
@@ -1264,7 +1575,6 @@ function Landing() {
       <ReviewsSection />
       <CaseMeaning />
       <AudienceSection />
-      <PubCoreSection />
       <FaqSection />
       <CTASection />
       <Footer />
