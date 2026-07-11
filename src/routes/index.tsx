@@ -192,19 +192,19 @@ const FAQ = [
 const REVIEW_SHOTS = [
   {
     src: reviewRenata.url,
-    alt: "Avaliação real de Renata na página da OFF de Strogonoff no iFood, cinco estrelas, 10/06/2026.",
+    alt: "Avaliação de Renata para a OFF de Strogonoff, cinco estrelas, 10/06/2026.",
   },
   {
     src: reviewGabriel.url,
-    alt: "Avaliação real de Gabriel na página da OFF de Strogonoff no iFood, cinco estrelas, 06/06/2026.",
+    alt: "Avaliação de Gabriel para a OFF de Strogonoff, cinco estrelas, 06/06/2026.",
   },
   {
     src: reviewMichelle.url,
-    alt: "Avaliação real de Michelle na página da OFF de Strogonoff no iFood, cinco estrelas, 02/06/2026.",
+    alt: "Avaliação de Michelle para a OFF de Strogonoff, cinco estrelas, 02/06/2026.",
   },
   {
     src: reviewCaio.url,
-    alt: "Avaliação real de Caio na página da OFF de Strogonoff no iFood, cinco estrelas, 25/04/2026.",
+    alt: "Avaliação de Caio para a OFF de Strogonoff, cinco estrelas, 25/04/2026.",
   },
 ];
 
@@ -1005,7 +1005,7 @@ function CaseSection() {
           </div>
         </div>
 
-        {/* Editorial composition — real strogonoff + concise proofs */}
+        {/* Editorial composition — strogonoff hero + concise proofs */}
         <div className="mt-16 grid grid-cols-12 gap-4 md:gap-6 items-start">
           <div className="col-span-12 md:col-span-7 relative">
             <Reveal>
@@ -1114,7 +1114,7 @@ function ReviewsSection() {
           <div className="col-span-12 lg:col-span-8">
             <div className="eyebrow">
               <span className="inline-block h-px w-8 bg-red" />
-              Avaliações reais
+              Avaliações
             </div>
             <h2 className="mt-6 text-4xl md:text-6xl leading-[1.02] tracking-tight text-paper">
               <span className="text-red">★★★★★</span> em todas as avaliações exibidas.
@@ -1122,8 +1122,7 @@ function ReviewsSection() {
           </div>
           <div className="col-span-12 lg:col-span-4">
             <p className="text-white/60 text-sm border-l border-red/60 pl-4">
-              Capturas reais de avaliações publicadas por clientes na página da OFF de Strogonoff
-              no iFood.
+              Avaliações publicadas por clientes da OFF de Strogonoff.
             </p>
           </div>
         </div>
@@ -1164,7 +1163,7 @@ function ReviewsSection() {
         </div>
 
         <p className="mt-8 text-xs text-white/50 uppercase tracking-[0.18em]">
-          Imagens reais da página da loja no iFood.
+          Avaliações publicadas na loja OFF de Strogonoff.
         </p>
       </div>
 
