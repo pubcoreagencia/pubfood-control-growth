@@ -1318,6 +1318,185 @@ function ReviewsSection() {
 
 /* --------------------- What the case represents --------------------- */
 
+function CaseReputationCard() {
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const [progress, setProgress] = useState(0);
+  const [reduced, setReduced] = useState(false);
+  const [reviewIdx, setReviewIdx] = useState(0);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const update = () => setReduced(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+
+  useEffect(() => {
+    const el = wrapRef.current;
+    if (!el) return;
+    let raf = 0;
+    const onScroll = () => {
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        raf = 0;
+        const rect = el.getBoundingClientRect();
+        const vh = window.innerHeight;
+        const start = vh * 0.85;
+        const end = vh * 0.2;
+        const raw = (start - rect.top) / (start - end);
+        setProgress(Math.max(0, Math.min(1, raw)));
+      });
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, []);
+
+  const incoming = [
+    { name: "Renata", text: "Chegou impecável, super recomendo.", stars: 5 },
+    { name: "Gabriel", text: "Padrão de restaurante, sempre.", stars: 5 },
+    { name: "Michelle", text: "Melhor strogonoff da cidade.", stars: 5 },
+  ];
+
+  useEffect(() => {
+    if (reduced) return;
+    const id = setInterval(() => setReviewIdx((i) => (i + 1) % incoming.length), 3600);
+    return () => clearInterval(id);
+  }, [reduced, incoming.length]);
+
+  const rating = reduced ? 5 : 4.2 + progress * 0.8;
+  const recompra = reduced ? 68 : Math.round(progress * 68);
+  const nps = reduced ? 92 : Math.round(72 + progress * 20);
+
+  return (
+    <div ref={wrapRef} className="relative max-w-md mt-10">
+      {/* soft ambient */}
+      <div
+        aria-hidden
+        className="absolute -inset-8 -z-10 opacity-60"
+        style={{
+          background:
+            "radial-gradient(60% 50% at 30% 20%, oklch(0.58 0.22 27 / 0.10), transparent 70%), radial-gradient(60% 60% at 90% 90%, oklch(0.14 0.005 260 / 0.06), transparent 70%)",
+        }}
+      />
+      <div
+        className="relative bg-card border border-line rounded-md p-6 md:p-7"
+        style={{ boxShadow: "0 20px 60px -30px oklch(0.14 0.005 260 / 0.35)" }}
+      >
+        <div className="flex items-center justify-between">
+          <div className="text-[0.6rem] uppercase tracking-[0.24em] text-graphite">
+            Reputação · OFF de Strogonoff
+          </div>
+          <div className="flex items-center gap-2 text-[0.6rem] uppercase tracking-[0.22em] text-graphite">
+            <span className="relative flex h-1.5 w-1.5">
+              <span className="absolute inline-flex h-full w-full rounded-full bg-red opacity-60 animate-ping" />
+              <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-red" />
+            </span>
+            ao vivo
+          </div>
+        </div>
+
+        {/* rating */}
+        <div className="mt-6 flex items-end gap-4">
+          <div className="font-display text-5xl md:text-6xl font-semibold tracking-tight tabular-nums">
+            {rating.toFixed(1)}
+          </div>
+          <div className="pb-2">
+            <div className="flex gap-1" aria-label={`Nota ${rating.toFixed(1)} de 5`}>
+              {[0, 1, 2, 3, 4].map((i) => {
+                const fill = Math.max(0, Math.min(1, rating - i));
+                return (
+                  <div key={i} className="relative w-4 h-4">
+                    <svg viewBox="0 0 20 20" className="absolute inset-0 w-4 h-4 text-line">
+                      <path
+                        fill="currentColor"
+                        d="M10 1.5l2.6 5.3 5.9.9-4.2 4.1 1 5.8L10 14.9l-5.3 2.8 1-5.8L1.5 7.7l5.9-.9L10 1.5z"
+                      />
+                    </svg>
+                    <div className="absolute inset-0 overflow-hidden" style={{ width: `${fill * 100}%` }}>
+                      <svg viewBox="0 0 20 20" className="w-4 h-4 text-red">
+                        <path
+                          fill="currentColor"
+                          d="M10 1.5l2.6 5.3 5.9.9-4.2 4.1 1 5.8L10 14.9l-5.3 2.8 1-5.8L1.5 7.7l5.9-.9L10 1.5z"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+            <div className="mt-1 text-[0.62rem] uppercase tracking-[0.22em] text-graphite">
+              super · iFood
+            </div>
+          </div>
+        </div>
+
+        {/* metrics */}
+        <div className="mt-8 space-y-5">
+          {[
+            { label: "Recompra 30d", value: `${recompra}%`, fill: recompra / 100 },
+            { label: "NPS", value: `${nps}`, fill: nps / 100 },
+            { label: "Consistência do padrão", value: `${Math.round(progress * 94 + 6)}%`, fill: progress * 0.94 + 0.06 },
+          ].map((m) => (
+            <div key={m.label}>
+              <div className="flex items-center justify-between text-[0.62rem] uppercase tracking-[0.22em] text-graphite mb-2">
+                <span>{m.label}</span>
+                <span className="tabular-nums text-ink font-medium">{m.value}</span>
+              </div>
+              <div className="h-[3px] bg-line overflow-hidden rounded-full">
+                <div
+                  className="h-full bg-red"
+                  style={{
+                    width: `${Math.min(1, m.fill) * 100}%`,
+                    transition: "width 900ms cubic-bezier(0.2, 0.7, 0.2, 1)",
+                  }}
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* incoming review toast */}
+        <div className="mt-7 border-t border-line pt-5">
+          <div className="text-[0.6rem] uppercase tracking-[0.24em] text-graphite mb-3">
+            Última avaliação
+          </div>
+          <div key={reviewIdx} className="flex items-start gap-3" style={{ animation: reduced ? undefined : "pf-review 500ms ease-out" }}>
+            <div className="h-8 w-8 rounded-full bg-ink text-paper flex items-center justify-center text-xs font-semibold shrink-0">
+              {incoming[reviewIdx].name[0]}
+            </div>
+            <div className="min-w-0">
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-medium">{incoming[reviewIdx].name}</span>
+                <span className="text-red text-xs tracking-tight">★★★★★</span>
+              </div>
+              <p className="mt-0.5 text-sm text-graphite leading-snug truncate">
+                "{incoming[reviewIdx].text}"
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <style>{`
+          @keyframes pf-review {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: none; }
+          }
+          @media (prefers-reduced-motion: reduce) {
+            [style*="pf-review"] { animation: none !important; }
+          }
+        `}</style>
+      </div>
+    </div>
+  );
+}
+
 function CaseMeaning() {
   const points = [
     { n: "01", t: "Produto consistente", d: "Padrão que o cliente reconhece a cada pedido." },
@@ -1341,14 +1520,7 @@ function CaseMeaning() {
             A PUB FOOD trabalha para transformar esses pontos em sistema, e não em esforço
             isolado.
           </p>
-          <img
-            src={deliveryPack}
-            alt="Embalagem de delivery com padrão de operação"
-            width={1200}
-            height={1500}
-            loading="lazy"
-            className="mt-10 w-full aspect-[4/5] object-cover max-w-md"
-          />
+          <CaseReputationCard />
         </div>
         <div className="col-span-12 lg:col-span-7 lg:pl-8">
           <div className="grid grid-cols-1 gap-px bg-line">
