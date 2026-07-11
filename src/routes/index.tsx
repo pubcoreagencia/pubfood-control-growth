@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 
-import logoAsset from "@/assets/pub-food-logo.png.asset.json";
+import logoAsset from "@/assets/pub-food-logo.png";
 import heroFood from "@/assets/hero-food.jpg";
 
 
