@@ -5,7 +5,7 @@ import logoAsset from "@/assets/pub-food-logo.png.asset.json";
 import heroFood from "@/assets/hero-food.jpg";
 import kitchenOps from "@/assets/kitchen-ops.jpg";
 import deliveryPack from "@/assets/delivery-pack.jpg";
-import strogonoffAsset from "@/assets/off-strogonoff-premium.jpg.asset.json";
+import strogonoffAsset from "@/assets/off-strogonoff-v2.jpg.asset.json";
 import ifoodStoreAsset from "@/assets/ifood-store-cropped.jpg.asset.json";
 import reviewRenata from "@/assets/review-renata.png.asset.json";
 import reviewGabriel from "@/assets/review-gabriel.png.asset.json";
@@ -890,24 +890,7 @@ function MethodSection() {
                 Um caminho em quatro etapas para transformar uma operação improvisada em um
                 negócio com processos, marca e recorrência.
               </p>
-              <div className="mt-8 hidden lg:block relative pl-2">
-                <img
-                  src={kitchenOps}
-                  alt="Cozinha profissional em operação"
-                  width={1200}
-                  height={900}
-                  loading="lazy"
-                  className="w-full aspect-[4/3] object-cover"
-                />
-                <div
-                  className="absolute inset-0 bg-paper origin-top"
-                  style={{
-                    transform: `scaleY(${1 - progress})`,
-                    transition: "transform 400ms linear",
-                  }}
-                  aria-hidden
-                />
-              </div>
+              <MethodOperationCard progress={progress} active={active} />
             </div>
           </div>
 
