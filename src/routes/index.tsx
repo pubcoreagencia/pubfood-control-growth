@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 import logoAsset from "@/assets/pub-food-logo.png.asset.json";
 import heroFood from "@/assets/hero-food.jpg";
 
-import deliveryPack from "@/assets/delivery-pack.jpg";
+
 import strogonoffAsset from "@/assets/off-strogonoff-v2.jpg.asset.json";
 import ifoodStoreAsset from "@/assets/ifood-store-cropped.jpg.asset.json";
 import reviewRenata from "@/assets/review-renata.png.asset.json";
