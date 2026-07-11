@@ -1053,16 +1053,16 @@ function CaseSection() {
           </div>
         </div>
 
-        {/* Real store screenshot as visual evidence */}
+        {/* Cropped store screenshot as visual evidence */}
         <div className="mt-16 grid grid-cols-12 gap-6 items-center">
           <div className="col-span-12 md:col-span-5">
             <Reveal>
               <div className="border border-white/10 bg-graphite-2 p-3 md:p-4 max-w-xs mx-auto md:mx-0">
                 <img
                   src={ifoodStoreAsset.url}
-                  alt="Captura real da página da OFF de Strogonoff no iFood, exibindo classificação Super e nota 5,0 com 112 avaliações."
+                  alt="Página da OFF de Strogonoff no iFood exibindo classificação Super e nota 5,0 com 112 avaliações."
                   width={738}
-                  height={1600}
+                  height={1355}
                   loading="lazy"
                   className="w-full h-auto"
                 />
@@ -1071,10 +1071,10 @@ function CaseSection() {
           </div>
           <div className="col-span-12 md:col-span-7 md:pl-6">
             <p className="text-white/70 text-base md:text-lg leading-relaxed max-w-xl">
-              Captura real da página da OFF de Strogonoff no iFood. A classificação{" "}
-              <span className="text-paper font-medium">Super</span> e a nota{" "}
-              <span className="text-paper font-medium">5,0</span> são exibidas pela própria
-              plataforma, com base no comportamento real dos pedidos.
+              Classificação{" "}
+              <span className="text-paper font-medium">Super</span> e nota{" "}
+              <span className="text-paper font-medium">5,0</span> exibidas pela própria
+              plataforma, com base no comportamento dos pedidos.
             </p>
           </div>
         </div>
