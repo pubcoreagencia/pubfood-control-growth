@@ -3,9 +3,9 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 
 import logoAsset from "@/assets/pub-food-logo.png.asset.json";
 import heroFood from "@/assets/hero-food.jpg";
-import kitchenOps from "@/assets/kitchen-ops.jpg";
+
 import deliveryPack from "@/assets/delivery-pack.jpg";
-import strogonoffAsset from "@/assets/off-strogonoff-premium.jpg.asset.json";
+import strogonoffAsset from "@/assets/off-strogonoff-v2.jpg.asset.json";
 import ifoodStoreAsset from "@/assets/ifood-store-cropped.jpg.asset.json";
 import reviewRenata from "@/assets/review-renata.png.asset.json";
 import reviewGabriel from "@/assets/review-gabriel.png.asset.json";
@@ -833,6 +833,109 @@ function SolutionSection() {
 
 /* --------------------------------- Method --------------------------------- */
 
+/** Scroll-driven operation dashboard — same visual family as the hero's
+ * order card. As the user scrolls the Método section, KPI bars fill and
+ * the active pillar highlights, translating the four-step method into a
+ * live-looking control panel. */
+function MethodOperationCard({ progress, active }: { progress: number; active: number }) {
+  const kpis = [
+    { label: "Pedidos organizados", base: 42, gain: 58 },
+    { label: "Recompra 30d", base: 18, gain: 34 },
+    { label: "Canais ativos", base: 25, gain: 65 },
+  ];
+  const stages = ["Diagnóstico", "Estrutura", "Ativação", "Evolução"];
+  return (
+    <div className="mt-10 hidden lg:block relative">
+      <div
+        className="absolute -inset-6 -z-10 blur-3xl opacity-60 rounded-full pointer-events-none"
+        style={{
+          background:
+            "radial-gradient(60% 55% at 40% 40%, oklch(0.58 0.22 27 / 0.28), transparent 70%)",
+        }}
+      />
+      <div
+        className="relative rounded-xl border border-white/10 overflow-hidden shadow-[0_30px_70px_-30px_rgba(0,0,0,0.55)] text-paper"
+        style={{
+          background:
+            "linear-gradient(155deg, oklch(0.22 0.006 260) 0%, oklch(0.14 0.006 260) 55%, oklch(0.10 0.006 260) 100%)",
+        }}
+      >
+        {/* header */}
+        <div className="flex items-baseline justify-between px-6 pt-6">
+          <div>
+            <div className="text-[0.58rem] uppercase tracking-[0.28em] text-white/40">
+              Operação
+            </div>
+            <div className="mt-1 font-display text-lg tracking-tight">Painel de controle</div>
+          </div>
+          <div className="flex items-center gap-2 text-[0.58rem] uppercase tracking-[0.24em] text-white/40">
+            <span className="h-1.5 w-1.5 rounded-full bg-red animate-pulse" />
+            Ao vivo
+          </div>
+        </div>
+        <div className="mx-6 mt-5 h-px bg-white/10" />
+        {/* KPI bars */}
+        <div className="px-6 py-6 space-y-5">
+          {kpis.map((k, i) => {
+            const localP = Math.max(0, Math.min(1, progress * 1.15 - i * 0.05));
+            const value = Math.round(k.base + k.gain * localP);
+            return (
+              <div key={k.label}>
+                <div className="flex items-baseline justify-between mb-2">
+                  <span className="text-[0.72rem] text-white/60 tracking-wide">{k.label}</span>
+                  <span className="font-display text-base tabular-nums text-paper">
+                    {value}
+                    <span className="text-white/40 text-xs ml-0.5">%</span>
+                  </span>
+                </div>
+                <div className="relative h-[3px] w-full bg-white/10 rounded-full overflow-hidden">
+                  <div
+                    className="absolute inset-y-0 left-0 rounded-full"
+                    style={{
+                      width: `${value}%`,
+                      background:
+                        "linear-gradient(90deg, oklch(0.58 0.22 27), oklch(0.72 0.20 40))",
+                      boxShadow: "0 0 10px oklch(0.58 0.22 27 / 0.55)",
+                      transition: "width 500ms cubic-bezier(.4,.7,.2,1)",
+                    }}
+                  />
+                </div>
+              </div>
+            );
+          })}
+        </div>
+        <div className="mx-6 h-px bg-white/10" />
+        {/* stage pips */}
+        <div className="px-6 py-5">
+          <div className="flex items-center justify-between text-[0.58rem] uppercase tracking-[0.24em] text-white/40 mb-3">
+            <span>Etapa</span>
+            <span className="font-medium text-paper">{stages[active]}</span>
+          </div>
+          <div className="grid grid-cols-4 gap-2">
+            {stages.map((_, i) => {
+              const filled = i <= active;
+              return (
+                <div
+                  key={i}
+                  className="h-1 rounded-full transition-colors duration-500"
+                  style={{
+                    background: filled
+                      ? "linear-gradient(90deg, oklch(0.58 0.22 27), oklch(0.72 0.20 40))"
+                      : "rgba(255,255,255,0.10)",
+                    boxShadow: filled ? "0 0 8px oklch(0.58 0.22 27 / 0.4)" : "none",
+                  }}
+                />
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+
+
 function MethodSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const [progress, setProgress] = useState(0); // 0..1 within section
@@ -890,24 +993,7 @@ function MethodSection() {
                 Um caminho em quatro etapas para transformar uma operação improvisada em um
                 negócio com processos, marca e recorrência.
               </p>
-              <div className="mt-8 hidden lg:block relative pl-2">
-                <img
-                  src={kitchenOps}
-                  alt="Cozinha profissional em operação"
-                  width={1200}
-                  height={900}
-                  loading="lazy"
-                  className="w-full aspect-[4/3] object-cover"
-                />
-                <div
-                  className="absolute inset-0 bg-paper origin-top"
-                  style={{
-                    transform: `scaleY(${1 - progress})`,
-                    transition: "transform 400ms linear",
-                  }}
-                  aria-hidden
-                />
-              </div>
+              <MethodOperationCard progress={progress} active={active} />
             </div>
           </div>
 
