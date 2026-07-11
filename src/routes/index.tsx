@@ -442,153 +442,191 @@ function Header() {
 
 /* --------------------------------- Hero --------------------------------- */
 
-/** Storefront motion graphic: an abstract delivery storefront draws
- * itself in — awning, sign, doorway, order badges — landing on the
- * institutional grid. Plays once. Reduced-motion friendly. */
-function HeroStorefront() {
-  return (
-    <div className="pointer-events-none absolute inset-0" aria-hidden>
-      {/* vertical editorial grid */}
-      <div className="absolute inset-0 opacity-[0.06]">
-        <div className="h-full w-full [background-image:linear-gradient(to_right,white_1px,transparent_1px)] [background-size:8.33%_100%]" />
-      </div>
-      {/* faint horizon */}
-      <div className="absolute left-0 right-0 top-1/2 h-px bg-white/10" />
+/** Interactive order-ticket panel: floats on the hero, tilts with the
+ * pointer, and cycles through a live delivery status. Simple, polished,
+ * product-like — the visual metaphor is "a live order flowing through
+ * PUB FOOD's operation". Reduced-motion friendly. */
+const HERO_STATUSES = [
+  { label: "Pedido recebido", tone: "text-white/70" },
+  { label: "Em preparo", tone: "text-white/85" },
+  { label: "Saiu para entrega", tone: "text-red" },
+  { label: "Entregue", tone: "text-emerald-400" },
+];
 
-      {/* animated storefront illustration, right-side */}
-      <svg
-        viewBox="0 0 600 720"
-        className="absolute right-[-4%] top-1/2 -translate-y-1/2 h-[92%] w-auto max-w-[62%] hidden md:block"
-        fill="none"
-        stroke="currentColor"
-        preserveAspectRatio="xMidYMid meet"
+function HeroOrderCard() {
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
+  const [step, setStep] = useState(0);
+
+  // status cycle
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    if (mq.matches) {
+      setStep(HERO_STATUSES.length - 1);
+      return;
+    }
+    const id = window.setInterval(() => {
+      setStep((s) => (s + 1) % HERO_STATUSES.length);
+    }, 2200);
+    return () => window.clearInterval(id);
+  }, []);
+
+  // pointer tilt
+  useEffect(() => {
+    const wrap = wrapRef.current;
+    const card = cardRef.current;
+    if (!wrap || !card) return;
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    if (mq.matches) return;
+    let raf = 0;
+    const onMove = (e: PointerEvent) => {
+      const rect = wrap.getBoundingClientRect();
+      const x = (e.clientX - rect.left) / rect.width - 0.5;
+      const y = (e.clientY - rect.top) / rect.height - 0.5;
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        raf = 0;
+        card.style.transform = `perspective(1200px) rotateY(${x * 8}deg) rotateX(${-y * 8}deg) translateZ(0)`;
+      });
+    };
+    const onLeave = () => {
+      card.style.transform =
+        "perspective(1200px) rotateY(-4deg) rotateX(3deg) translateZ(0)";
+    };
+    onLeave();
+    wrap.addEventListener("pointermove", onMove);
+    wrap.addEventListener("pointerleave", onLeave);
+    return () => {
+      wrap.removeEventListener("pointermove", onMove);
+      wrap.removeEventListener("pointerleave", onLeave);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, []);
+
+  const progress = ((step + 1) / HERO_STATUSES.length) * 100;
+
+  return (
+    <div
+      ref={wrapRef}
+      className="relative w-full aspect-[5/6] md:aspect-[4/5] max-w-md mx-auto md:max-w-none"
+    >
+      {/* soft outer glow */}
+      <div
+        className="absolute inset-0 -z-10 blur-3xl opacity-70"
+        style={{
+          background:
+            "radial-gradient(60% 55% at 60% 40%, oklch(0.58 0.22 27 / 0.35), transparent 70%)",
+        }}
+      />
+      <div
+        ref={cardRef}
+        className="relative h-full w-full rounded-xl border border-white/12 overflow-hidden shadow-[0_40px_90px_-30px_rgba(0,0,0,0.9)] transition-transform duration-300 ease-out"
+        style={{
+          background:
+            "linear-gradient(155deg, oklch(0.22 0.006 260) 0%, oklch(0.14 0.006 260) 55%, oklch(0.10 0.006 260) 100%)",
+          transformStyle: "preserve-3d",
+        }}
       >
-        <g className="text-white/22" strokeWidth="1">
-          {/* facade */}
-          <path
-            d="M80 640 L80 260 L520 260 L520 640"
-            style={{
-              strokeDasharray: 2400,
-              strokeDashoffset: 2400,
-              animation: "pf-draw 1400ms cubic-bezier(.2,.7,.2,1) 300ms forwards",
-            }}
-          />
-          {/* ground */}
-          <path
-            d="M40 640 L560 640"
-            style={{
-              strokeDasharray: 600,
-              strokeDashoffset: 600,
-              animation: "pf-draw 800ms cubic-bezier(.2,.7,.2,1) 200ms forwards",
-            }}
-          />
-          {/* awning */}
-          <path
-            d="M60 260 L540 260 L520 210 L80 210 Z"
-            style={{
-              strokeDasharray: 1400,
-              strokeDashoffset: 1400,
-              animation: "pf-draw 1200ms cubic-bezier(.2,.7,.2,1) 900ms forwards",
-            }}
-          />
-          {/* window left */}
-          <rect
-            x="120"
-            y="320"
-            width="130"
-            height="180"
-            style={{
-              strokeDasharray: 620,
-              strokeDashoffset: 620,
-              animation: "pf-draw 900ms cubic-bezier(.2,.7,.2,1) 1500ms forwards",
-            }}
-          />
-          {/* door */}
-          <path
-            d="M290 640 L290 380 L410 380 L410 640"
-            style={{
-              strokeDasharray: 800,
-              strokeDashoffset: 800,
-              animation: "pf-draw 1000ms cubic-bezier(.2,.7,.2,1) 1700ms forwards",
-            }}
-          />
-          <path
-            d="M350 380 L350 640"
-            style={{
-              strokeDasharray: 260,
-              strokeDashoffset: 260,
-              animation: "pf-draw 600ms cubic-bezier(.2,.7,.2,1) 2200ms forwards",
-            }}
-          />
-          {/* small window right */}
-          <rect
-            x="450"
-            y="320"
-            width="60"
-            height="120"
-            style={{
-              strokeDasharray: 360,
-              strokeDashoffset: 360,
-              animation: "pf-draw 700ms cubic-bezier(.2,.7,.2,1) 1900ms forwards",
-            }}
-          />
-        </g>
-        {/* sign plate */}
-        <g
+        {/* top gloss */}
+        <div
+          className="absolute inset-x-0 top-0 h-24 pointer-events-none"
           style={{
-            opacity: 0,
-            animation: "pf-fade 500ms ease-out 2100ms forwards",
+            background:
+              "linear-gradient(180deg, rgba(255,255,255,0.06), transparent)",
           }}
-        >
-          <rect x="200" y="150" width="200" height="42" className="fill-red" />
-          <text
-            x="300"
-            y="179"
-            textAnchor="middle"
-            className="fill-white"
-            style={{
-              fontFamily: "Sora, sans-serif",
-              fontSize: "16px",
-              fontWeight: 700,
-              letterSpacing: "0.22em",
-            }}
-          >
-            ABERTO
-          </text>
-        </g>
-        {/* incoming order badges rising toward sign */}
-        {[
-          { cx: 130, cy: 560, d: 2400 },
-          { cx: 470, cy: 540, d: 2600 },
-          { cx: 220, cy: 600, d: 2800 },
-        ].map((o) => (
-          <g
-            key={o.cx}
-            style={{
-              opacity: 0,
-              animation: `pf-rise 1400ms cubic-bezier(.2,.7,.2,1) ${o.d}ms forwards`,
-            }}
-          >
-            <circle cx={o.cx} cy={o.cy} r="4" className="fill-red" />
-          </g>
-        ))}
-      </svg>
+        />
+        {/* corner accent */}
+        <div className="absolute top-0 right-0 h-16 w-16 pointer-events-none">
+          <div className="absolute top-3 right-3 h-2 w-2 rounded-full bg-red animate-pulse" />
+          <div className="absolute top-2 right-8 text-[0.58rem] uppercase tracking-[0.28em] text-white/45">
+            LIVE
+          </div>
+        </div>
+
+        {/* header */}
+        <div className="relative px-6 md:px-8 pt-8 md:pt-10 flex items-baseline justify-between">
+          <div>
+            <div className="text-[0.6rem] uppercase tracking-[0.28em] text-white/40">
+              Pedido
+            </div>
+            <div className="mt-1 font-display text-xl md:text-2xl text-paper tracking-tight">
+              #4821
+            </div>
+          </div>
+          <div className="text-right">
+            <div className="text-[0.6rem] uppercase tracking-[0.28em] text-white/40">
+              Loja
+            </div>
+            <div className="mt-1 font-display text-sm md:text-base text-white/85 tracking-tight">
+              OFF de Strogonoff
+            </div>
+          </div>
+        </div>
+
+        <div className="mx-6 md:mx-8 mt-6 h-px bg-white/10" />
+
+        {/* items */}
+        <div className="relative px-6 md:px-8 mt-6 space-y-3 text-sm">
+          {[
+            { q: "1×", n: "Strogonoff de Filé", p: "R$ 58,90" },
+            { q: "1×", n: "Batata palha extra", p: "R$ 6,00" },
+            { q: "2×", n: "Guaraná lata", p: "R$ 10,00" },
+          ].map((it) => (
+            <div key={it.n} className="flex items-baseline justify-between gap-3">
+              <span className="text-white/50 font-mono text-xs w-8">{it.q}</span>
+              <span className="flex-1 text-white/85 truncate">{it.n}</span>
+              <span className="text-white/60 font-mono text-xs">{it.p}</span>
+            </div>
+          ))}
+        </div>
+
+        <div className="mx-6 md:mx-8 mt-6 h-px bg-white/10" />
+
+        <div className="px-6 md:px-8 mt-4 flex items-baseline justify-between">
+          <span className="text-[0.6rem] uppercase tracking-[0.28em] text-white/40">
+            Total
+          </span>
+          <span className="font-display text-lg text-paper">R$ 74,90</span>
+        </div>
+
+        {/* status */}
+        <div className="absolute inset-x-0 bottom-0 px-6 md:px-8 pb-6 md:pb-7">
+          <div className="flex items-center justify-between text-[0.6rem] uppercase tracking-[0.24em] text-white/40 mb-2">
+            <span>Status</span>
+            <span
+              key={step}
+              className={`font-medium ${HERO_STATUSES[step].tone}`}
+              style={{ animation: "pf-status 400ms ease-out" }}
+            >
+              {HERO_STATUSES[step].label}
+            </span>
+          </div>
+          <div className="relative h-[3px] w-full bg-white/10 overflow-hidden rounded-full">
+            <div
+              className="absolute inset-y-0 left-0 rounded-full"
+              style={{
+                width: `${progress}%`,
+                background:
+                  "linear-gradient(90deg, oklch(0.58 0.22 27), oklch(0.72 0.20 40))",
+                boxShadow: "0 0 12px oklch(0.58 0.22 27 / 0.6)",
+                transition: "width 700ms cubic-bezier(.4,.7,.2,1)",
+              }}
+            />
+          </div>
+          <div className="mt-3 flex items-center gap-2 text-[0.6rem] uppercase tracking-[0.22em] text-white/35">
+            <span className="h-1 w-1 rounded-full bg-red animate-pulse" />
+            Em tempo real via PUB FOOD
+          </div>
+        </div>
+      </div>
 
       <style>{`
-        @keyframes pf-draw { to { stroke-dashoffset: 0; } }
-        @keyframes pf-fade { to { opacity: 1; } }
-        @keyframes pf-rise {
-          0% { opacity: 0; transform: translateY(0); }
-          40% { opacity: 1; }
-          100% { opacity: 0.9; transform: translateY(-320px); }
+        @keyframes pf-status {
+          0% { opacity: 0; transform: translateY(3px); }
+          100% { opacity: 1; transform: translateY(0); }
         }
         @media (prefers-reduced-motion: reduce) {
-          [style*="pf-draw"], [style*="pf-fade"], [style*="pf-rise"] {
-            animation: none !important;
-            opacity: 1 !important;
-            stroke-dashoffset: 0 !important;
-            transform: none !important;
-          }
+          [style*="pf-status"] { animation: none !important; }
         }
       `}</style>
     </div>
@@ -599,19 +637,32 @@ function Hero() {
   return (
     <section
       id="top"
-      className="on-dark relative bg-ink text-paper overflow-hidden pt-32 md:pt-44 pb-24 md:pb-36"
+      className="relative overflow-hidden pt-32 md:pt-40 pb-24 md:pb-36 text-paper"
+      style={{
+        background:
+          "radial-gradient(120% 90% at 85% 15%, oklch(0.28 0.10 27 / 0.55), transparent 55%), radial-gradient(90% 80% at 10% 90%, oklch(0.20 0.02 260 / 0.85), transparent 60%), linear-gradient(180deg, oklch(0.10 0.006 260) 0%, oklch(0.08 0.006 260) 100%)",
+      }}
     >
-      <HeroStorefront />
+      {/* premium ambient glow layers */}
+      <div
+        className="absolute -top-32 -right-32 h-[520px] w-[520px] rounded-full pointer-events-none blur-3xl opacity-60"
+        style={{
+          background:
+            "radial-gradient(circle, oklch(0.58 0.22 27 / 0.45), transparent 65%)",
+        }}
+      />
+      <div
+        className="absolute -bottom-40 -left-32 h-[560px] w-[560px] rounded-full pointer-events-none blur-3xl opacity-50"
+        style={{
+          background:
+            "radial-gradient(circle, oklch(0.35 0.10 27 / 0.35), transparent 70%)",
+        }}
+      />
+      {/* soft top and bottom fades to blend into next dark sections */}
+      <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-b from-transparent to-ink pointer-events-none" />
 
-      {/* premium editorial marker: fixed vertical index */}
-      <div className="absolute left-6 md:left-10 top-32 md:top-40 hidden md:flex flex-col items-start gap-3 text-white/40 text-[0.6rem] uppercase tracking-[0.28em]">
-        <span className="h-8 w-px bg-red" />
-        <span>N. 001</span>
-        <span>PUB / FOOD</span>
-      </div>
-
-      <div className="container-editorial relative grid grid-cols-12 gap-x-6 gap-y-12 items-end">
-        <div className="col-span-12 lg:col-span-8 xl:col-span-7 lg:pl-14">
+      <div className="container-editorial relative grid grid-cols-12 gap-x-6 gap-y-14 items-center">
+        <div className="col-span-12 lg:col-span-7">
           <Reveal>
             <div className="eyebrow">
               <span className="inline-block h-px w-10 bg-red" />
@@ -619,7 +670,7 @@ function Hero() {
             </div>
           </Reveal>
           <Reveal delay={80}>
-            <h1 className="mt-8 text-[2.6rem] leading-[0.98] sm:text-6xl lg:text-[6.2rem] xl:text-[7rem] font-semibold tracking-[-0.035em] text-paper">
+            <h1 className="mt-8 text-[2.6rem] leading-[0.98] sm:text-6xl lg:text-[5.6rem] xl:text-[6.4rem] font-semibold tracking-[-0.035em] text-paper">
               A casa que dá{" "}
               <span
                 className="italic font-normal text-white/80"
@@ -677,31 +728,10 @@ function Hero() {
           </Reveal>
         </div>
 
-        {/* mobile-only compact illustration slot to keep composition alive on small screens */}
-        <div className="col-span-12 md:hidden">
-          <div className="relative aspect-[5/4] w-full border border-white/10 bg-graphite-2/40 overflow-hidden">
-            <div className="absolute inset-0 flex items-center justify-center">
-              <svg
-                viewBox="0 0 600 480"
-                className="h-3/4 w-auto text-white/25"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.2"
-              >
-                <path d="M80 420 L80 160 L520 160 L520 420" />
-                <path d="M60 160 L540 160 L520 110 L80 110 Z" />
-                <rect x="130" y="220" width="120" height="140" />
-                <path d="M300 420 L300 260 L410 260 L410 420" />
-                <rect x="440" y="220" width="60" height="110" />
-              </svg>
-            </div>
-            <div className="absolute left-3 top-3 text-[0.6rem] uppercase tracking-[0.24em] text-white/50">
-              PUB / FOOD — N. 001
-            </div>
-            <div className="absolute right-3 bottom-3 text-[0.6rem] uppercase tracking-[0.24em] text-red">
-              Aberto
-            </div>
-          </div>
+        <div className="col-span-12 lg:col-span-5">
+          <Reveal delay={200}>
+            <HeroOrderCard />
+          </Reveal>
         </div>
       </div>
     </section>
