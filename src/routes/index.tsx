@@ -15,7 +15,7 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "A PUB FOOD une gestão, operação, marketing e estrutura digital para transformar restaurantes, deliveries e dark kitchens em negócios mais organizados, reconhecidos e recorrentes.",
+          "Cria uma landing page B2B para a PUB FOOD, focada em gestão e estruturação de negócios gastronômicos.",
       },
       { property: "og:url", content: "/" },
       {
@@ -25,7 +25,7 @@ export const Route = createFileRoute("/")({
       {
         property: "og:description",
         content:
-          "Gestão, estrutura digital, marketing e crescimento para restaurantes, deliveries e dark kitchens.",
+          "Cria uma landing page B2B para a PUB FOOD, focada em gestão e estruturação de negócios gastronômicos.",
       },
     ],
     links: [{ rel: "canonical", href: "/" }],

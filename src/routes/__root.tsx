@@ -81,19 +81,23 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         name: "description",
         content:
-          "Gestão, estrutura digital, marketing e crescimento para restaurantes, deliveries e dark kitchens que querem vender com mais controle e recorrência.",
+          "Cria uma landing page B2B para a PUB FOOD, focada em gestão e estruturação de negócios gastronômicos.",
       },
       { name: "author", content: "PUB FOOD" },
       { property: "og:title", content: "PUB FOOD — Gestão de Restaurantes, Delivery e Dark Kitchens" },
       {
         property: "og:description",
         content:
-          "Gestão, estrutura digital, marketing e crescimento para restaurantes, deliveries e dark kitchens.",
+          "Cria uma landing page B2B para a PUB FOOD, focada em gestão e estruturação de negócios gastronômicos.",
       },
       { property: "og:type", content: "website" },
       { property: "og:site_name", content: "PUB FOOD" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "theme-color", content: "#0b0b0d" },
+      { name: "twitter:title", content: "PUB FOOD — Gestão de Restaurantes, Delivery e Dark Kitchens" },
+      { name: "twitter:description", content: "Cria uma landing page B2B para a PUB FOOD, focada em gestão e estruturação de negócios gastronômicos." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/50711c11-a1bf-41a7-afd4-01383673e467/id-preview-cd89c474--0b8c78d8-f691-465f-a4db-f4cff15a82c5.lovable.app-1783793019773.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/50711c11-a1bf-41a7-afd4-01383673e467/id-preview-cd89c474--0b8c78d8-f691-465f-a4db-f4cff15a82c5.lovable.app-1783793019773.png" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
