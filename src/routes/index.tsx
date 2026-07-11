@@ -5,12 +5,12 @@ import logoAsset from "@/assets/pub-food-logo.png";
 import heroFood from "@/assets/hero-food.jpg";
 
 
-import strogonoffAsset from "@/assets/off-strogonoff-v2.jpg.asset.json";
-import ifoodStoreAsset from "@/assets/ifood-store-cropped.jpg.asset.json";
-import reviewRenata from "@/assets/review-renata.png.asset.json";
-import reviewGabriel from "@/assets/review-gabriel.png.asset.json";
-import reviewMichelle from "@/assets/review-michelle.png.asset.json";
-import reviewCaio from "@/assets/review-caio.png.asset.json";
+import strogonoffAsset from "@/assets/off-strogonoff-v2.jpg";
+import ifoodStoreAsset from "@/assets/ifood-store-cropped.jpg";
+import reviewRenata from "@/assets/review-renata.png";
+import reviewGabriel from "@/assets/review-gabriel.png";
+import reviewMichelle from "@/assets/review-michelle.png";
+import reviewCaio from "@/assets/review-caio.png";
 import { buildWhatsAppUrl, pubFood } from "@/lib/pubfood-config";
 
 export const Route = createFileRoute("/")({
