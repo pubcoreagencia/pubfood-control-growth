@@ -191,19 +191,19 @@ const FAQ = [
 
 const REVIEW_SHOTS = [
   {
-    src: reviewRenata.url,
+    src: reviewRenata,
     alt: "Avaliação de Renata para a OFF de Strogonoff, cinco estrelas, 10/06/2026.",
   },
   {
-    src: reviewGabriel.url,
+    src: reviewGabriel,
     alt: "Avaliação de Gabriel para a OFF de Strogonoff, cinco estrelas, 06/06/2026.",
   },
   {
-    src: reviewMichelle.url,
+    src: reviewMichelle,
     alt: "Avaliação de Michelle para a OFF de Strogonoff, cinco estrelas, 02/06/2026.",
   },
   {
-    src: reviewCaio.url,
+    src: reviewCaio,
     alt: "Avaliação de Caio para a OFF de Strogonoff, cinco estrelas, 25/04/2026.",
   },
 ];
@@ -277,7 +277,7 @@ function LogoMark({ size = "md" }: { size?: "sm" | "md" }) {
       aria-hidden={false}
     >
       <img
-        src={logoAsset.url}
+        src={logoAsset}
         alt="PUB FOOD"
         width={220}
         height={220}
@@ -1126,7 +1126,7 @@ function CaseSection() {
           <div className="col-span-12 md:col-span-7 relative">
             <Reveal>
               <img
-                src={strogonoffAsset.url}
+                src={strogonoffAsset}
                 alt="Strogonoff brasileiro acompanhado de arroz branco e batata palha."
                 width={1408}
                 height={1120}
@@ -1175,7 +1175,7 @@ function CaseSection() {
             <Reveal>
               <div className="border border-white/10 bg-graphite-2 p-3 md:p-4 max-w-xs mx-auto md:mx-0">
                 <img
-                  src={ifoodStoreAsset.url}
+                  src={ifoodStoreAsset}
                   alt="Página da OFF de Strogonoff no iFood exibindo classificação Super e nota 5,0 com 112 avaliações."
                   width={738}
                   height={1355}
