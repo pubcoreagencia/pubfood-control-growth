@@ -5,8 +5,8 @@ import logoAsset from "@/assets/pub-food-logo.png.asset.json";
 import heroFood from "@/assets/hero-food.jpg";
 import kitchenOps from "@/assets/kitchen-ops.jpg";
 import deliveryPack from "@/assets/delivery-pack.jpg";
-import strogonoffAsset from "@/assets/off-strogonoff-real.jpg.asset.json";
-import ifoodStoreAsset from "@/assets/ifood-store.jpg.asset.json";
+import strogonoffAsset from "@/assets/off-strogonoff-premium.jpg.asset.json";
+import ifoodStoreAsset from "@/assets/ifood-store-cropped.jpg.asset.json";
 import reviewRenata from "@/assets/review-renata.png.asset.json";
 import reviewGabriel from "@/assets/review-gabriel.png.asset.json";
 import reviewMichelle from "@/assets/review-michelle.png.asset.json";
@@ -192,19 +192,19 @@ const FAQ = [
 const REVIEW_SHOTS = [
   {
     src: reviewRenata.url,
-    alt: "Avaliação real de Renata na página da OFF de Strogonoff no iFood, cinco estrelas, 10/06/2026.",
+    alt: "Avaliação de Renata para a OFF de Strogonoff, cinco estrelas, 10/06/2026.",
   },
   {
     src: reviewGabriel.url,
-    alt: "Avaliação real de Gabriel na página da OFF de Strogonoff no iFood, cinco estrelas, 06/06/2026.",
+    alt: "Avaliação de Gabriel para a OFF de Strogonoff, cinco estrelas, 06/06/2026.",
   },
   {
     src: reviewMichelle.url,
-    alt: "Avaliação real de Michelle na página da OFF de Strogonoff no iFood, cinco estrelas, 02/06/2026.",
+    alt: "Avaliação de Michelle para a OFF de Strogonoff, cinco estrelas, 02/06/2026.",
   },
   {
     src: reviewCaio.url,
-    alt: "Avaliação real de Caio na página da OFF de Strogonoff no iFood, cinco estrelas, 25/04/2026.",
+    alt: "Avaliação de Caio para a OFF de Strogonoff, cinco estrelas, 25/04/2026.",
   },
 ];
 
@@ -442,68 +442,148 @@ function Header() {
 
 /* --------------------------------- Hero --------------------------------- */
 
-/** Abstract order-flow motion graphic: small modules start slightly
- * off-grid and settle onto vertical grid lines. Plays once; no loop.
- * Prefers-reduced-motion is honoured via the global CSS override. */
-function HeroFlow() {
+/** Storefront motion graphic: an abstract delivery storefront draws
+ * itself in — awning, sign, doorway, order badges — landing on the
+ * institutional grid. Plays once. Reduced-motion friendly. */
+function HeroStorefront() {
   return (
     <div className="pointer-events-none absolute inset-0" aria-hidden>
-      {/* base vertical grid */}
-      <div className="absolute inset-0 opacity-[0.07]">
+      {/* vertical editorial grid */}
+      <div className="absolute inset-0 opacity-[0.06]">
         <div className="h-full w-full [background-image:linear-gradient(to_right,white_1px,transparent_1px)] [background-size:8.33%_100%]" />
       </div>
-      {/* animated grid line reveals */}
-      <svg className="absolute inset-0 h-full w-full" preserveAspectRatio="none">
-        {[15, 33, 55, 78].map((x, i) => (
-          <line
-            key={x}
-            x1={`${x}%`}
-            x2={`${x}%`}
-            y1="0"
-            y2="100%"
-            stroke="rgba(255,255,255,0.14)"
-            strokeWidth="1"
-            strokeDasharray="1200"
-            strokeDashoffset="1200"
+      {/* faint horizon */}
+      <div className="absolute left-0 right-0 top-1/2 h-px bg-white/10" />
+
+      {/* animated storefront illustration, right-side */}
+      <svg
+        viewBox="0 0 600 720"
+        className="absolute right-[-4%] top-1/2 -translate-y-1/2 h-[92%] w-auto max-w-[62%] hidden md:block"
+        fill="none"
+        stroke="currentColor"
+        preserveAspectRatio="xMidYMid meet"
+      >
+        <g className="text-white/22" strokeWidth="1">
+          {/* facade */}
+          <path
+            d="M80 640 L80 260 L520 260 L520 640"
             style={{
-              animation: `pf-line-draw 900ms cubic-bezier(.2,.7,.2,1) ${400 + i * 150}ms forwards`,
+              strokeDasharray: 2400,
+              strokeDashoffset: 2400,
+              animation: "pf-draw 1400ms cubic-bezier(.2,.7,.2,1) 300ms forwards",
             }}
           />
+          {/* ground */}
+          <path
+            d="M40 640 L560 640"
+            style={{
+              strokeDasharray: 600,
+              strokeDashoffset: 600,
+              animation: "pf-draw 800ms cubic-bezier(.2,.7,.2,1) 200ms forwards",
+            }}
+          />
+          {/* awning */}
+          <path
+            d="M60 260 L540 260 L520 210 L80 210 Z"
+            style={{
+              strokeDasharray: 1400,
+              strokeDashoffset: 1400,
+              animation: "pf-draw 1200ms cubic-bezier(.2,.7,.2,1) 900ms forwards",
+            }}
+          />
+          {/* window left */}
+          <rect
+            x="120"
+            y="320"
+            width="130"
+            height="180"
+            style={{
+              strokeDasharray: 620,
+              strokeDashoffset: 620,
+              animation: "pf-draw 900ms cubic-bezier(.2,.7,.2,1) 1500ms forwards",
+            }}
+          />
+          {/* door */}
+          <path
+            d="M290 640 L290 380 L410 380 L410 640"
+            style={{
+              strokeDasharray: 800,
+              strokeDashoffset: 800,
+              animation: "pf-draw 1000ms cubic-bezier(.2,.7,.2,1) 1700ms forwards",
+            }}
+          />
+          <path
+            d="M350 380 L350 640"
+            style={{
+              strokeDasharray: 260,
+              strokeDashoffset: 260,
+              animation: "pf-draw 600ms cubic-bezier(.2,.7,.2,1) 2200ms forwards",
+            }}
+          />
+          {/* small window right */}
+          <rect
+            x="450"
+            y="320"
+            width="60"
+            height="120"
+            style={{
+              strokeDasharray: 360,
+              strokeDashoffset: 360,
+              animation: "pf-draw 700ms cubic-bezier(.2,.7,.2,1) 1900ms forwards",
+            }}
+          />
+        </g>
+        {/* sign plate */}
+        <g
+          style={{
+            opacity: 0,
+            animation: "pf-fade 500ms ease-out 2100ms forwards",
+          }}
+        >
+          <rect x="200" y="150" width="200" height="42" className="fill-red" />
+          <text
+            x="300"
+            y="179"
+            textAnchor="middle"
+            className="fill-white"
+            style={{
+              fontFamily: "Sora, sans-serif",
+              fontSize: "16px",
+              fontWeight: 700,
+              letterSpacing: "0.22em",
+            }}
+          >
+            ABERTO
+          </text>
+        </g>
+        {/* incoming order badges rising toward sign */}
+        {[
+          { cx: 130, cy: 560, d: 2400 },
+          { cx: 470, cy: 540, d: 2600 },
+          { cx: 220, cy: 600, d: 2800 },
+        ].map((o) => (
+          <g
+            key={o.cx}
+            style={{
+              opacity: 0,
+              animation: `pf-rise 1400ms cubic-bezier(.2,.7,.2,1) ${o.d}ms forwards`,
+            }}
+          >
+            <circle cx={o.cx} cy={o.cy} r="4" className="fill-red" />
+          </g>
         ))}
       </svg>
-      {/* order modules that settle onto the grid */}
-      <div className="absolute inset-0">
-        {[
-          { top: "22%", left: "16%", d: 800, color: "bg-red" },
-          { top: "42%", left: "34%", d: 950, color: "bg-white/70" },
-          { top: "68%", left: "56%", d: 1100, color: "bg-red" },
-          { top: "32%", left: "79%", d: 1250, color: "bg-white/60" },
-          { top: "78%", left: "22%", d: 1400, color: "bg-white/40" },
-        ].map((m, i) => (
-          <span
-            key={i}
-            className={`absolute h-1.5 w-1.5 ${m.color}`}
-            style={{
-              top: m.top,
-              left: m.left,
-              opacity: 0,
-              transform: "translate(6px,-4px)",
-              animation: `pf-module-settle 900ms cubic-bezier(.2,.7,.2,1) ${m.d}ms forwards`,
-            }}
-          />
-        ))}
-      </div>
+
       <style>{`
-        @keyframes pf-line-draw {
-          to { stroke-dashoffset: 0; }
-        }
-        @keyframes pf-module-settle {
-          0% { opacity: 0; transform: translate(6px,-4px); }
-          60% { opacity: 1; }
-          100% { opacity: 1; transform: translate(0,0); }
+        @keyframes pf-draw { to { stroke-dashoffset: 0; } }
+        @keyframes pf-fade { to { opacity: 1; } }
+        @keyframes pf-rise {
+          0% { opacity: 0; transform: translateY(0); }
+          40% { opacity: 1; }
+          100% { opacity: 0.9; transform: translateY(-320px); }
         }
         @media (prefers-reduced-motion: reduce) {
-          [style*="pf-line-draw"], [style*="pf-module-settle"] {
+          [style*="pf-draw"], [style*="pf-fade"], [style*="pf-rise"] {
             animation: none !important;
             opacity: 1 !important;
             stroke-dashoffset: 0 !important;
@@ -519,34 +599,47 @@ function Hero() {
   return (
     <section
       id="top"
-      className="on-dark relative bg-ink text-paper overflow-hidden pt-28 md:pt-36 pb-20 md:pb-28"
+      className="on-dark relative bg-ink text-paper overflow-hidden pt-32 md:pt-44 pb-24 md:pb-36"
     >
-      <HeroFlow />
-      <div className="container-editorial relative grid grid-cols-12 gap-x-6 gap-y-10 items-end">
-        <div className="col-span-12 lg:col-span-7">
+      <HeroStorefront />
+
+      {/* premium editorial marker: fixed vertical index */}
+      <div className="absolute left-6 md:left-10 top-32 md:top-40 hidden md:flex flex-col items-start gap-3 text-white/40 text-[0.6rem] uppercase tracking-[0.28em]">
+        <span className="h-8 w-px bg-red" />
+        <span>N. 001</span>
+        <span>PUB / FOOD</span>
+      </div>
+
+      <div className="container-editorial relative grid grid-cols-12 gap-x-6 gap-y-12 items-end">
+        <div className="col-span-12 lg:col-span-8 xl:col-span-7 lg:pl-14">
           <Reveal>
             <div className="eyebrow">
-              <span className="inline-block h-px w-8 bg-red" />
-              Gestão de restaurantes, deliveries e dark kitchens
+              <span className="inline-block h-px w-10 bg-red" />
+              Casa de gestão para negócios gastronômicos
             </div>
           </Reveal>
           <Reveal delay={80}>
-            <h1 className="mt-6 text-[2.4rem] leading-[1.02] sm:text-6xl lg:text-[5.2rem] font-semibold tracking-[-0.03em] text-paper">
-              Seu delivery pode vender muito{" "}
-              <span className="italic font-light text-white/70">sem entregar</span> o controle
-              do <span className="text-red">negócio</span>.
+            <h1 className="mt-8 text-[2.6rem] leading-[0.98] sm:text-6xl lg:text-[6.2rem] xl:text-[7rem] font-semibold tracking-[-0.035em] text-paper">
+              A casa que dá{" "}
+              <span
+                className="italic font-normal text-white/80"
+                style={{ fontFamily: "var(--font-serif)" }}
+              >
+                forma
+              </span>{" "}
+              ao seu <span className="text-red">delivery</span>.
             </h1>
           </Reveal>
           <Reveal delay={160}>
-            <p className="mt-8 max-w-xl text-lg text-white/70 leading-relaxed">
-              A PUB FOOD une gestão, operação, marketing e estrutura digital para transformar
-              restaurantes e deliveries em negócios mais organizados, reconhecidos e recorrentes.
+            <p className="mt-10 max-w-xl text-lg md:text-xl text-white/70 leading-relaxed">
+              A PUB FOOD estrutura restaurantes, deliveries e dark kitchens de alto padrão —
+              operação, marca, canais próprios e recorrência tratados como um só sistema.
             </p>
           </Reveal>
           <Reveal delay={240}>
-            <div className="mt-10 flex flex-col sm:flex-row gap-3">
+            <div className="mt-12 flex flex-col sm:flex-row gap-3">
               <CTAButton href={buildWhatsAppUrl()} external>
-                Quero estruturar meu negócio
+                Solicitar diagnóstico
               </CTAButton>
               <a
                 href="#case"
@@ -567,36 +660,48 @@ function Hero() {
             </div>
           </Reveal>
           <Reveal delay={320}>
-            <div className="mt-14 flex flex-wrap items-center gap-x-10 gap-y-4 text-xs uppercase tracking-[0.2em] text-white/40">
-              <span>Menos dependência.</span>
-              <span className="text-red/80">Mais controle.</span>
-              <span>Mais recorrência.</span>
+            <div className="mt-16 pt-8 border-t border-white/10 grid grid-cols-3 max-w-lg gap-6">
+              <div>
+                <div className="text-xs uppercase tracking-[0.22em] text-white/40">Operação</div>
+                <div className="mt-2 font-display text-lg text-paper">sob controle</div>
+              </div>
+              <div>
+                <div className="text-xs uppercase tracking-[0.22em] text-white/40">Marca</div>
+                <div className="mt-2 font-display text-lg text-paper">com autoridade</div>
+              </div>
+              <div>
+                <div className="text-xs uppercase tracking-[0.22em] text-white/40">Cliente</div>
+                <div className="mt-2 font-display text-lg text-paper">que retorna</div>
+              </div>
             </div>
           </Reveal>
         </div>
 
-        <div className="col-span-12 lg:col-span-5 relative">
-          <Reveal delay={220}>
-            <div
-              className="relative aspect-[4/5] w-full overflow-hidden"
-              style={{
-                clipPath: "inset(0 0 0 0)",
-              }}
-            >
-              <img
-                src={heroFood}
-                alt="Operação de cozinha profissional preparando pedidos para delivery"
-                width={1600}
-                height={2000}
-                className="absolute inset-0 h-full w-full object-cover contrast-[1.02]"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-ink/80 via-ink/10 to-transparent" />
-              {/* subtle editorial marker (no OFF proofs here) */}
-              <div className="absolute left-4 bottom-4 md:left-6 md:bottom-6 border border-white/25 px-3 py-2 text-[0.62rem] uppercase tracking-[0.22em] text-white/70 backdrop-blur-sm">
-                Operação sob controle
-              </div>
+        {/* mobile-only compact illustration slot to keep composition alive on small screens */}
+        <div className="col-span-12 md:hidden">
+          <div className="relative aspect-[5/4] w-full border border-white/10 bg-graphite-2/40 overflow-hidden">
+            <div className="absolute inset-0 flex items-center justify-center">
+              <svg
+                viewBox="0 0 600 480"
+                className="h-3/4 w-auto text-white/25"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.2"
+              >
+                <path d="M80 420 L80 160 L520 160 L520 420" />
+                <path d="M60 160 L540 160 L520 110 L80 110 Z" />
+                <rect x="130" y="220" width="120" height="140" />
+                <path d="M300 420 L300 260 L410 260 L410 420" />
+                <rect x="440" y="220" width="60" height="110" />
+              </svg>
             </div>
-          </Reveal>
+            <div className="absolute left-3 top-3 text-[0.6rem] uppercase tracking-[0.24em] text-white/50">
+              PUB / FOOD — N. 001
+            </div>
+            <div className="absolute right-3 bottom-3 text-[0.6rem] uppercase tracking-[0.24em] text-red">
+              Aberto
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -900,7 +1005,7 @@ function CaseSection() {
           </div>
         </div>
 
-        {/* Editorial composition — real strogonoff + concise proofs */}
+        {/* Editorial composition — strogonoff hero + concise proofs */}
         <div className="mt-16 grid grid-cols-12 gap-4 md:gap-6 items-start">
           <div className="col-span-12 md:col-span-7 relative">
             <Reveal>
@@ -948,16 +1053,16 @@ function CaseSection() {
           </div>
         </div>
 
-        {/* Real store screenshot as visual evidence */}
+        {/* Cropped store screenshot as visual evidence */}
         <div className="mt-16 grid grid-cols-12 gap-6 items-center">
           <div className="col-span-12 md:col-span-5">
             <Reveal>
               <div className="border border-white/10 bg-graphite-2 p-3 md:p-4 max-w-xs mx-auto md:mx-0">
                 <img
                   src={ifoodStoreAsset.url}
-                  alt="Captura real da página da OFF de Strogonoff no iFood, exibindo classificação Super e nota 5,0 com 112 avaliações."
+                  alt="Página da OFF de Strogonoff no iFood exibindo classificação Super e nota 5,0 com 112 avaliações."
                   width={738}
-                  height={1600}
+                  height={1355}
                   loading="lazy"
                   className="w-full h-auto"
                 />
@@ -966,10 +1071,10 @@ function CaseSection() {
           </div>
           <div className="col-span-12 md:col-span-7 md:pl-6">
             <p className="text-white/70 text-base md:text-lg leading-relaxed max-w-xl">
-              Captura real da página da OFF de Strogonoff no iFood. A classificação{" "}
-              <span className="text-paper font-medium">Super</span> e a nota{" "}
-              <span className="text-paper font-medium">5,0</span> são exibidas pela própria
-              plataforma, com base no comportamento real dos pedidos.
+              Classificação{" "}
+              <span className="text-paper font-medium">Super</span> e nota{" "}
+              <span className="text-paper font-medium">5,0</span> exibidas pela própria
+              plataforma, com base no comportamento dos pedidos.
             </p>
           </div>
         </div>
@@ -1009,7 +1114,7 @@ function ReviewsSection() {
           <div className="col-span-12 lg:col-span-8">
             <div className="eyebrow">
               <span className="inline-block h-px w-8 bg-red" />
-              Avaliações reais
+              Avaliações
             </div>
             <h2 className="mt-6 text-4xl md:text-6xl leading-[1.02] tracking-tight text-paper">
               <span className="text-red">★★★★★</span> em todas as avaliações exibidas.
@@ -1017,8 +1122,7 @@ function ReviewsSection() {
           </div>
           <div className="col-span-12 lg:col-span-4">
             <p className="text-white/60 text-sm border-l border-red/60 pl-4">
-              Capturas reais de avaliações publicadas por clientes na página da OFF de Strogonoff
-              no iFood.
+              Avaliações publicadas por clientes da OFF de Strogonoff.
             </p>
           </div>
         </div>
@@ -1059,7 +1163,7 @@ function ReviewsSection() {
         </div>
 
         <p className="mt-8 text-xs text-white/50 uppercase tracking-[0.18em]">
-          Imagens reais da página da loja no iFood.
+          Avaliações publicadas na loja OFF de Strogonoff.
         </p>
       </div>
 

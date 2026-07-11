@@ -7,6 +7,7 @@
 @theme inline {
   --font-display: "Sora", ui-sans-serif, system-ui, sans-serif;
   --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Instrument Serif", ui-serif, Georgia, serif;
 
   --radius-sm: 2px;
   --radius-md: 4px;
