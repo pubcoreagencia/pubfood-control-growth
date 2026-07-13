@@ -270,34 +270,31 @@ function Reveal({
  * Do not restyle, recolor, invert or crop the source image.
  */
 function LogoMark({ size = "md" }: { size?: "sm" | "md" }) {
-  const h = size === "sm" ? "h-9" : "h-11";
+  const h = size === "sm" ? "h-14" : "h-20";
   return (
     <span
-      className={`inline-flex items-center justify-center bg-white rounded-sm px-2 ${h}`}
+      className={`inline-flex items-center ${h}`}
       aria-hidden={false}
     >
       <img
         src={logoAsset}
         alt="PUB FOOD"
-        width={220}
-        height={220}
+        width={480}
+        height={480}
         className="h-full w-auto object-contain"
         loading="eager"
         onError={(e) => {
-          // Fallback textual mark preserves layout if the asset fails.
-          // TODO: verificar disponibilidade do asset oficial na CDN caso este fallback apareça.
           const el = e.currentTarget;
           const parent = el.parentElement;
           if (parent) {
-            parent.classList.remove("bg-white");
-            parent.classList.add("bg-transparent");
             parent.innerHTML =
-              '<span class="text-paper font-display font-bold tracking-tight">PUB<span class="text-red">.</span>FOOD</span>';
+              '<span class="text-paper font-display font-bold tracking-tight text-2xl">PUB<span class="text-red">.</span>FOOD</span>';
           }
         }}
       />
     </span>
   );
+
 }
 
 function CTAButton({
